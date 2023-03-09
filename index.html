@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCAS Airbus350</title>
+    <link rel="stylesheet" href="assets/styles/style.css" />
+</head>
+<body>
+    <div class="app">
+        <div class="screen">
+            <div class="left-plane-zone">
+                <span class="height">HEIGHT 1</span>
+                <img class="left-plane" src="assets/images/a350-left-sm.png" alt="plane #1">
+            </div>
+            <div class="buffer">
+                <span class="height">HEIGHT 2</span>
+            </div>
+            <div class="right-plane-zone">
+                <img class="right-plane" src="assets/images/a350-right-sm.png" alt="plane #2">
+            </div>
+        </div>
+        <div class="control">
+            <div class="horizont">
+                <div class="outside-horizont">
+                    <img src="assets/images/horizont-outside.png" alt="horizont panel">
+                </div>
+            </div>
+            <div class="height-controler">
+                <div class="outside-height">
+                    <img src="assets/images/height-outside-full-x2.png" alt="set height">
+                </div>
+            </div>
+            <div class="tcas">
+                <div class="height-setter">
+                    <form>
+                        <p><b>Установить уровни высоты:</b><Br>
+                            <p>H1: <input type="text" size="5"></p>
+                            <p>H2: <input type="text" size="5"></p>
+                    </form>
+                </div>
+                <div class="outside-tcas">
+                    <img src="assets/images/tcas.png" alt="tcas">
+                </div>
+            </div>
+            <div class="start">
+                <div class="select-plane">
+                    <form>
+                        <p><b>Выбрать самолет:</b><Br>
+                            <p><input type="radio" size="15">1 (left)</p>
+                            <p><input type="radio" size="15">2 (right)</p>
+                    </form>
+                </div>
+                <div class="start-button">
+                    <button>START</button>
+                </div>
+                <div class="logo">
+                    <img src="assets/images/logo.png" alt="logo">
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script src="script/script.js"></script>
+</body>
+</html>
