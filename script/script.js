@@ -6,7 +6,7 @@ class Airbus {
         this.isRight = +this.plane.dataset.number - 1; // 2: isRight = true,  1: isRight = false
     }
 
-    start(maxWidth, maxHeight, speed=25) {
+    start(maxWidth, maxHeight, speed=1) {
         this.plane.animate(
             createKeyframes(maxWidth, maxHeight, speed, this.isRight),
             {
@@ -24,8 +24,8 @@ const rightPlane = new Airbus(".right-plane", 2);
 
 
 document.querySelector("button").addEventListener("click", () => {
-    leftPlane.start(1300, 150, 1); // width | height | speed
-    rightPlane.start(1300, 150, 1);
+    leftPlane.start(1300, 150, 0.5); // width | height | speed (0.5 long, 1 - center, 2 - start)
+    rightPlane.start(1300, 150, 2); 
 });
 
 
@@ -36,7 +36,7 @@ function createKeyframes(maxWidth, maxHeight, speed, isRight) {
 
     while ((currentWidth < maxWidth) || (currentHeight < maxHeight)) {
         currentWidth += 25;
-        currentHeight = Math.floor(Math.sqrt(currentWidth*speed));
+        currentHeight = Math.floor(Math.sqrt(30*currentWidth*speed));
         console.log(speed);
     
         if (currentHeight > maxHeight) {

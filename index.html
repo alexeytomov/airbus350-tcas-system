@@ -21,6 +21,8 @@
                 <img data-number="2" class="right-plane" src="assets/images/a350-right-sm-new.png" alt="plane #2">
             </div>
         </div>
+
+        <!-- Control start -->
         <div class="control">
             <div class="horizont">
                 <div class="outside-horizont">
@@ -30,6 +32,7 @@
             <div class="height-controler">
                 <div class="outside-height">
                     <img src="assets/images/height-outside-full-x2.png" alt="set height">
+                    <img class="circle-height" src="assets/images/circle-height.png" alt="height controller">
                 </div>
             </div>
             <div class="tcas">
@@ -45,13 +48,16 @@
                 </div>
             </div>
             <div class="start">
-                <div class="select-plane">
-                    <form>
-                        <p><b>Выбрать самолет:</b><Br>
-                            <p><input type="radio" size="15">1 (left)</p>
-                            <p><input type="radio" size="15">2 (right)</p>
-                    </form>
-                </div>
+                <form>
+                    <div class="select-plane">
+                        <p>Выбрать самолет:</p>
+                        <input type="radio" id="planeChoice1" name="radio-select-plane" size="15" checked>
+                        <label for="planeChoice1">1 (left)</label>
+                        <input type="radio" id="planeChoice2" name="radio-select-plane" size="15">
+                        <label for="planeChoice2">2 (left)</label>
+                    </div>
+                </form>
+                
                 <div class="start-button">
                     <button>START</button>
                 </div>
@@ -61,6 +67,7 @@
             </div>
 
         </div>
+        <!-- Control end -->
     </div>
     <script src="script/script.js"></script>
 </body>
