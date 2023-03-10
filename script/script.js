@@ -76,3 +76,16 @@ function getDynamicInformation(selector) {
 }
 
 //Set Heigth levels end
+
+//Speed and height settings throught circles start
+
+// const heightCircle = document.querySelectorAll(".circle-height"),
+//       speedCircle = document.querySelectorAll(".speed-height");
+
+// const [heightFirstDigit, heightSecondDigit] = document.querySelectorAll(".height-table-item");
+
+// function incrDigit(selector) {
+//     if (selector.digit)
+// }
+
+//Speed and height settings throught circles start

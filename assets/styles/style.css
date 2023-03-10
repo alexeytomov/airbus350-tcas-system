@@ -117,6 +117,7 @@ table {
 /* Control style start */
 
 .control{
+    display:flex;
     width: 100%;
     height: 450px;
 	background-color:black;
@@ -124,51 +125,138 @@ table {
 
 .horizont {
     display: inline-block;
+    width: 426px;
+    height:100%;
+    background-image: url(../images/horizont-outside.png);
 }
+
+/* Height and speed setting start */
 
 .height-controler {
     display: inline-block;
     position: relative;
+    width: 465px;
+    height:100%;
+    background-image: url(../images/height-outside-full-x2_clear.png);
+}
+
+.circles{
+    width: 800px;
+    position:absolute;
+    top: 245px;
+    left: 99px;
+    justify-content: space-between;
 }
 
 .circle-height{
-    position:absolute;
-    
+    margin-right: 111px;
+    cursor: pointer;
 }
+
+.circle-speed{
+    cursor: pointer;
+}
+
+.height-table {
+    width: 150px;
+    height:34px;
+    display: flex;
+    position: absolute;
+    top: 162px;
+    left: 100px;
+}
+
+.speed-table{
+    width: 150px;
+    height:34px;
+    display: flex;
+    position: absolute;
+    top: 162px;
+    left: 250px;
+}
+
+/* .speed-table-item{
+    height: 100%;
+    width: 25px;
+} */
+
+/* Height and speed setting end */
+
+
+
+/* 
+.circle-height{
+    position:absolute;
+
+} */
 
 .tcas{
     display: inline-block;
     height: 100%
 }
 
-.height-setter{
-    display: inline-block;
-    color: white;
-    font-size: 20px;
-    padding: 80px 40px;
-}
-
 
 .start{
-    display: inline-block;
+    display: block;
+    flex-grow: 1;
     font-size: 20px;
     color: white;
+    margin: 0 auto;
 }
 
 .select-plane{
-    padding-bottom: 85px;
-    padding-left: 140px;
+    margin: 20px auto 30px auto;
+    width: 300px;
+    font-size: 35px;
 
 }
 
-.start-button {
-    padding: 50px;
-    padding-left: 170px;
-    
+#planeChoice1 {
+    transform:scale(1.6);
+    opacity:0.9;
+    cursor:pointer;
 }
 
-.start-button button{
+#planeChoice2 {
+    transform:scale(1.6);
+    opacity:0.9;
+    cursor:pointer;
+}
+
+.height-setter{
+    margin-left: 20px;
+    margin-bottom: 70px;
+    color: white;
+    font-size: 35px;
+}
+
+#height-form > p {
+    margin-bottom: 10px;
+}
+
+.height-level {
+
+    width:  200px;
+    height: 20px;
+    padding: 5px 10px 5px 10px;
+    border:1px solid #999;
+    font-size:30px;
+}
+
+
+.start-buttons-wrapper {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+}
+
+.start-button{
+    width: 100%;
     font-size: 30px;
+    cursor:pointer;
 }
 
 .logo{

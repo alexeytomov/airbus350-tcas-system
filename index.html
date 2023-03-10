@@ -26,44 +26,82 @@
         <div class="control">
             <div class="horizont">
                 <div class="outside-horizont">
-                    <img src="assets/images/horizont-outside.png" alt="horizont panel">
+                    <!-- <img src="assets/images/horizont-outside.png" alt="horizont panel"> -->
                 </div>
             </div>
             <div class="height-controler">
-                <div class="outside-height">
-                    <img src="assets/images/height-outside-full-x2.png" alt="set height">
+                <div class="circles">
                     <img class="circle-height" src="assets/images/circle-height.png" alt="height controller">
+                    <img class="circle-speed" src="assets/images/circle-speed.png" alt="height controller">
+                </div>
+                <div class="height-table">
+                    <div data-number="1" class="height-table-item">
+                        <img data-digit="1" id="heightFirst"class="height-table-item-pic" src="assets/images/nums/1.png" alt="digit">
+                    </div>
+                    <div data-number="2" class="height-table-item">
+                        <img data-digit="0" id="heightSecond" class="height-table-item-pic" src="assets/images/nums/0.png" alt="digit">
+                    </div>
+                    <div data-number="3" class="height-table-item">
+                        <img class="height-table-item-pic" src="assets/images/nums/0.png" alt="digit">
+                    </div>
+                    <div data-number="4" class="height-table-item">
+                        <img class="height-table-item-pic" src="assets/images/nums/0.png" alt="digit">
+                    </div>
+                    <div data-number="5" class="height-table-item">
+                        <img class="height-table-item-pic" src="assets/images/nums/0.png" alt="digit">
+                    </div>
+                </div>
+                <div class="speed-table">
+                    <div class="speed-table-item">
+                        <img class="height-table-item-pic" src="assets/images/nums/+.png" alt="sign">
+                    </div>
+                    <div class="speed-table-item">
+                        <img class="height-table-item-pic" src="assets/images/nums/2.png" alt="digit">
+                    </div>
+                    <div class="speed-table-item">
+                        <img class="height-table-item-pic" src="assets/images/nums/5.png" alt="digit">
+                    </div>
+                    <div class="speed-table-item">
+                        <img class="height-table-item-pic" src="assets/images/nums/0.png" alt="digit">
+                    </div>
+                    <div class="speed-table-item">
+                        <img class="height-table-item-pic" src="assets/images/nums/0.png" alt="digit">
+                    </div>
                 </div>
             </div>
             <div class="tcas">
-                <div class="height-setter">
-                    <form>
-                        <p><b>Установить уровни высоты:</b><Br>
-                            <p>H1: <input data-height="1" id="h1" class="height-level" type="text" size="5"></p>
-                            <p>H2: <input data-height="2" id="h2" class="height-level" type="text" size="5"></p>
-                    </form>
-                </div>
                 <div class="outside-tcas">
-                    <img src="assets/images/tcas.png" alt="tcas">
+                    <img src="assets/images/tcas-bg.png" alt="tcas">
                 </div>
             </div>
             <div class="start">
                 <form>
                     <div class="select-plane">
                         <p>Выбрать самолет:</p>
-                        <input type="radio" id="planeChoice1" name="radio-select-plane" size="15" checked>
+                        <input type="radio" id="planeChoice1" name="radio-select-plane" checked>
                         <label for="planeChoice1">1 (left)</label>
                         <input type="radio" id="planeChoice2" name="radio-select-plane" size="15">
                         <label for="planeChoice2">2 (left)</label>
                     </div>
                 </form>
                 
-                <div class="start-button">
-                    <button>START</button>
+                <div class="height-setter">
+                    <form id="height-form">
+                        <p>Установить уровни высоты:</p>
+                            <p>H1: <input data-height="1" id="h1" class="height-level" type="text" size="5"></p>
+                            <p>H2: <input data-height="2" id="h2" class="height-level" type="text" size="5"></p>
+                    </form>
                 </div>
-                <div class="logo">
+
+                <div class="start-buttons-wrapper">
+                    <button class="start-button">START</button>
+                    <button class="start-button">RESTART</button>
+                </div>
+
+
+                <!-- <div class="logo">
                     <img src="assets/images/logo.png" alt="logo">
-                </div>
+                </div> -->
             </div>
 
         </div>
