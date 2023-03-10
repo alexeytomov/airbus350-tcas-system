@@ -93,6 +93,7 @@ table {
 
 .left-plane{
     position: absolute;
+    z-index: 100;
 }
 
 .right-plane-zone{
@@ -154,8 +155,12 @@ table {
 
 .start-button {
     padding: 50px;
-    padding-left: 170px
+    padding-left: 170px;
     
+}
+
+.start-button button{
+    font-size: 30px;
 }
 
 .logo{

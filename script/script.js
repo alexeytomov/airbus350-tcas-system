@@ -1,50 +1,54 @@
 //Plane movement start
 
-const rightPlane = document.querySelector(".right-plane");
-const leftPlane = document.querySelector(".left-plane");
+class Airbus {
+    constructor(selector, number) {
+        this.plane = document.querySelector(selector);
+        this.isRight = number - 1; // 2: isRight = true,  1: isRight = false
+    }
+
+    start(maxWidth, maxHeight, speed=25) {
+        this.plane.animate(
+            createKeyframes(maxWidth, maxHeight, speed, this.isRight),
+            {
+                duration: 5000,
+                iteratuions: 1,
+                fill: 'forwards'
+            }
+        )
+    }
+};
+
+const leftPlane = new Airbus(".left-plane", 1);
+const rightPlane = new Airbus(".right-plane", 2);
+
+
 
 document.querySelector("button").addEventListener("click", () => {
-    const rightPlaneAnimation = rightPlane.animate(
-        createPoints(0, 0, 1300, 130, false), //END Y = 200PX - PLANE-MODEL-HEIGHT
-        {
-            duration: 5000,
-            iteratuions: 1
-        }
-    );
-
-    const leftPlaneAnimation = leftPlane.animate(
-        createPoints(0, 0, 1300, 130, true), //END Y = 200PX - PLANE-MODEL-HEIGHT
-        {
-            duration: 5000,
-            iteratuions: 1
-        }
-    );
-    
+    leftPlane.start(1300, 150, 100);
+    rightPlane.start(1300, 150);
 });
 
 
-function createPoints(startX, startY, endX, endY, isLeft) { //create points for movements like sqrt-graph
-    let points = [];
-    while (startX < endX) {
-        startX += 25;
-        startY = Math.floor(Math.sqrt(startX*25));
-        
-        if (startY > endY) {
-            startY = endY;
+function createKeyframes(maxWidth, maxHeight, speed, isRight) {
+    let frames = [];
+    let currentWidth = 0,
+        currentHeight = 0;
+
+    while (currentWidth < maxWidth) {
+        currentWidth += 25;
+        currentHeight = Math.floor(Math.sqrt(currentWidth*speed));
+    
+        if (currentHeight > maxHeight) {
+            currentHeight = maxHeight;
         }
-        if (isLeft){
-            points.push({transform: `translate(${startX}px, ${startY}px)`});
+        if (isRight){
+            frames.push({transform: `translate(-${currentWidth}px, -${currentHeight}px)`});
         } else {
-            points.push({transform: `translate(-${startX}px, -${startY}px)`});
+            frames.push({transform: `translate(${currentWidth}px, ${currentHeight}px)`});
         }
     }
-    return points;
+    return frames;
 }
-
-
-
-
-
 
 
 //Plane movement end
