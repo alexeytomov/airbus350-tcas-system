@@ -12,13 +12,13 @@
         <div class="screen">
             <div class="left-plane-zone">
                 <span class="height">HEIGHT 1</span>
-                <img class="left-plane" src="assets/images/a350-left-sm-new.png" alt="plane #1">
+                <img data-number="1" class="left-plane" src="assets/images/a350-left-sm-new.png" alt="plane #1">
             </div>
             <div class="buffer">
                 <span class="height">HEIGHT 2</span>
             </div>
             <div class="right-plane-zone">
-                <img class="right-plane" src="assets/images/a350-right-sm-new.png" alt="plane #2">
+                <img data-number="2" class="right-plane" src="assets/images/a350-right-sm-new.png" alt="plane #2">
             </div>
         </div>
         <div class="control">
@@ -36,8 +36,8 @@
                 <div class="height-setter">
                     <form>
                         <p><b>Установить уровни высоты:</b><Br>
-                            <p>H1: <input type="text" size="5"></p>
-                            <p>H2: <input type="text" size="5"></p>
+                            <p>H1: <input data-height="1" id="h1" class="height-level" type="text" size="5"></p>
+                            <p>H2: <input data-height="2" id="h2" class="height-level" type="text" size="5"></p>
                     </form>
                 </div>
                 <div class="outside-tcas">
