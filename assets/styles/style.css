@@ -141,7 +141,8 @@ table {
 }
 
 .circles{
-    width: 800px;
+    display: flex;
+    width: 300px;
     position:absolute;
     top: 245px;
     left: 99px;
@@ -149,11 +150,13 @@ table {
 }
 
 .circle-height{
+    display: flex;
     margin-right: 111px;
     cursor: pointer;
 }
 
 .circle-speed{
+    display: flex;
     cursor: pointer;
 }
 
