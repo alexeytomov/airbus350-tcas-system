@@ -169,6 +169,15 @@ table {
     left: 100px;
 }
 
+#heightRight{
+    display: none;
+}
+
+#heightLeft{
+    display: none;
+}
+
+
 .speed-table{
     width: 150px;
     height:34px;
@@ -176,6 +185,14 @@ table {
     position: absolute;
     top: 162px;
     left: 250px;
+}
+
+#speedRight{
+    display: none;
+}
+
+#speedLeft{
+    display: none;
 }
 
 .height-table-item{

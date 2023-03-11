@@ -75,64 +75,124 @@ function getDynamicInformation(selector) {
     });
 }
 
-//Set Heigth levels end
+//Set Height levels end
 
 //Speed and height settings throught circles start
 
 const [circleHeightDown, circleHeightUp] = document.querySelectorAll(".circle-height-pic"),
       [circleSpeedDown, circleSpeedUp] = document.querySelectorAll(".circle-speed-pic");
 
-const heightTable = document.querySelectorAll(".height-table-item"),
-      [heightFirstDigit, heightSecondDigit] = heightTable;
-
-const speedSymbols = document.querySelectorAll(".speed-table-item"),
-      [speedSign, ...speedTable] = speedSymbols,
-      [speedFirstDigit, speedSecondDigit] = speedTable;
-console.log(speedFirstDigit.innerHTML);
       
+// Class for speed and height panel start
 
+class HeightSetter {
+    constructor(wrapperSelector) {
+        this.wrapper = document.querySelector(wrapperSelector);
+        this.table = this.wrapper.querySelectorAll(".height-table-item");
+        [this.firstDigit, this.secondDigit] = this.wrapper.querySelectorAll(".height-table-item");
 
+        this.increase = () => { //listener (для удаление нужен тот же объект)
+            incrDigit(this.firstDigit, this.secondDigit, 3, this.table, 1);
+        }
 
-circleHeightUp.addEventListener("click", () => {
-    incrDigit(heightFirstDigit, heightSecondDigit, 3, heightTable, 1);
-});
-
-circleHeightDown.addEventListener("click", () => {
-    decrDigit(heightFirstDigit, heightSecondDigit, 0, heightTable, 1);
-});
-
-circleSpeedUp.addEventListener("click", () => {
-    if (speedSign.dataset.sign == "+") {
-        incrDigit(speedFirstDigit, speedSecondDigit, 5, speedTable, 5);
-    } 
-    else if (speedSign.dataset.sign == "0") {
-        incrDigit(speedFirstDigit, speedSecondDigit, 5, speedTable, 5);
-        speedSign.setAttribute("data-sign", "+");
-        speedSign.innerHTML = `<img src="assets/images/nums/${speedSign.dataset.sign}.png" alt="sign">`;
-    } else {
-        decrDigit(speedFirstDigit, speedSecondDigit, -5, speedTable, 5);
-        if ((speedFirstDigit.dataset.digit == "0") && (speedSecondDigit.dataset.digit == "0")) {
-            speedSign.setAttribute("data-sign", 0);
-            speedSign.innerHTML = '';
+        this.decrease = () => {
+            decrDigit(this.firstDigit, this.secondDigit, 0, this.table, 1);
         }
     }
-});
 
-circleSpeedDown.addEventListener("click", () => {
-    if (speedSign.dataset.sign == "+") {
-        decrDigit(speedFirstDigit, speedSecondDigit, 0, speedTable, 5);
-        if ((speedFirstDigit.dataset.digit == "0") && (speedSecondDigit.dataset.digit == "0")) {
-            speedSign.setAttribute("data-sign", 0);
-            speedSign.innerHTML = '';
-        } 
-    } else if (speedSecondDigit.dataset.digit == "0") {
-        incrDigit(speedFirstDigit, speedSecondDigit, 5, speedTable, 5);
-        speedSign.setAttribute("data-sign", "-");
-        speedSign.innerHTML = `<img src="assets/images/nums/${speedSign.dataset.sign}.png" alt="sign">`;
-    } else {
-        incrDigit(speedFirstDigit, speedSecondDigit, 5, speedTable, 5);
+    render() {
+        circleHeightUp.addEventListener("click", this.increase);
+        circleHeightDown.addEventListener("click", this.decrease);
+
+        this.wrapper.style.display = "flex";
     }
-});
+
+    save() {
+        this.height = this.firstDigit.dataset.digit + this.secondDigit.dataset.digit;
+    }
+
+    delete() {
+        circleHeightUp.removeEventListener("click", this.increase);
+        circleHeightDown.removeEventListener("click", this.decrease);
+
+        this.wrapper.style.display = "none";
+    }
+}
+
+class SpeedSetter {
+    constructor(wrapperSelector) {
+        this.wrapper = document.querySelector(wrapperSelector);
+        [this.sign, ...this.table] = this.wrapper.querySelectorAll(".speed-table-item");
+        [this.firstDigit, this.secondDigit] = this.table;
+
+        this.increase = () => { //listener (для удаление нужен тот же объект)
+            if (this.sign.dataset.sign == "+") {
+                incrDigit(this.firstDigit, this.secondDigit, 5, this.table, 5);
+            } 
+            else if (this.sign.dataset.sign == "0") {
+                incrDigit(this.firstDigit, this.secondDigit, 5, this.table, 5);
+                this.sign.setAttribute("data-sign", "+");
+                this.sign.innerHTML = `<img src="assets/images/nums/${this.sign.dataset.sign}.png" alt="sign">`;
+            } else {
+                decrDigit(this.firstDigit, this.secondDigit, -5, this.table, 5);
+                if ((this.firstDigit.dataset.digit == "0") && (this.secondDigit.dataset.digit == "0")) {
+                    this.sign.setAttribute("data-sign", 0);
+                    this.sign.innerHTML = '';
+                }
+            }
+        }
+
+        this.decrease = () => {
+            if (this.sign.dataset.sign == "+") {
+                decrDigit(this.firstDigit, this.secondDigit, 0, this.table, 5);
+                if ((this.firstDigit.dataset.digit == "0") && (this.secondDigit.dataset.digit == "0")) {
+                    this.sign.setAttribute("data-sign", 0);
+                    this.sign.innerHTML = '';
+                } 
+            } else if (this.secondDigit.dataset.digit == "0") {
+                incrDigit(this.firstDigit, this.secondDigit, 5, this.table, 5);
+                this.sign.setAttribute("data-sign", "-");
+                this.sign.innerHTML = `<img src="assets/images/nums/${this.sign.dataset.sign}.png" alt="sign">`;
+            } else {
+                incrDigit(this.firstDigit, this.secondDigit, 5, this.table, 5);
+            }
+        }
+    }
+
+    render() {
+        circleSpeedUp.addEventListener("click", this.increase);
+        circleSpeedDown.addEventListener("click", this.decrease);
+
+        this.wrapper.style.display = "flex";
+    }
+
+    save() {
+        this.speed = this.firstDigit.dataset.digit + this.secondDigit.dataset.digit;
+    }
+
+    delete() {
+        circleSpeedUp.removeEventListener("click", this.increase);
+        circleSpeedDown.removeEventListener("click", this.decrease);
+
+        this.wrapper.style.display = "none";
+    }
+}
+
+// Chosing airbus (left| right) 
+
+const leftHeightSetter = new HeightSetter("#heightLeft");
+const rightHeightSetter = new HeightSetter("#heightRight");
+
+const leftSpeedSetter = new SpeedSetter("#speedLeft");
+const rightSpeedSetter = new SpeedSetter("#speedRight");
+
+leftHeightSetter.render();
+leftSpeedSetter.render();
+
+
+
+
+//Function for dynamic height and speed setting
 
 function decrDigit(firstDigit, secondDigit, minDigit, table, step) {
     if ((secondDigit.dataset.digit > minDigit) || (firstDigit.dataset.digit > minDigit)){
@@ -191,9 +251,7 @@ function deleteZeros(table) {
 
 function createZeroes(table) {
     for (let i = 1; i < table.length - 1; i++){
-        console.log(table[i]);
         table[i].innerHTML = `<img src="assets/images/nums/${table[i].dataset.digit}.png" alt="digit"></img>`;
     }
 }
 
-//Speed and height settings throught circles end
