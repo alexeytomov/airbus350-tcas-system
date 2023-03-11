@@ -179,18 +179,51 @@ class SpeedSetter {
 }
 
 // Chosing airbus (left| right) 
+const choiceLeft = document.querySelector("#planeChoice1"),
+      choiceRight = document.querySelector("#planeChoice2");
 
 const leftHeightSetter = new HeightSetter("#heightLeft");
-const rightHeightSetter = new HeightSetter("#heightRight");
-
 const leftSpeedSetter = new SpeedSetter("#speedLeft");
+const rightHeightSetter = new HeightSetter("#heightRight");
 const rightSpeedSetter = new SpeedSetter("#speedRight");
 
-leftHeightSetter.render();
-leftSpeedSetter.render();
+const leftControlSetter = {
+    height: leftHeightSetter,
+    speed: leftSpeedSetter
+};
+
+const rightControlSetter = {
+    height: rightHeightSetter,
+    speed: rightSpeedSetter
+}
+
+for (let setter of Object.values(leftControlSetter)) { //render default value (left)
+    console.log(Object.values(leftControlSetter));
+    console.log(setter);
+    setter.render();
+}
 
 
+choiceRight.addEventListener("change", () => {
+    console.log(2);
+    changeAirbuses(rightControlSetter, leftControlSetter);
+});
 
+choiceLeft.addEventListener("change", () => {
+    console.log(1);
+    changeAirbuses(leftControlSetter, rightControlSetter);
+});
+
+function changeAirbuses(newControlSetter, oldControlSetter) { 
+    for (setter of Object.values(oldControlSetter)) {
+        setter.save();
+        setter.delete();
+    }
+    
+    for (setter of Object.values(newControlSetter)) {
+        setter.render();
+    }
+}
 
 //Function for dynamic height and speed setting
 
