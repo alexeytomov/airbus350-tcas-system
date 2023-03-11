@@ -79,13 +79,121 @@ function getDynamicInformation(selector) {
 
 //Speed and height settings throught circles start
 
-// const heightCircle = document.querySelectorAll(".circle-height"),
-//       speedCircle = document.querySelectorAll(".speed-height");
+const [circleHeightDown, circleHeightUp] = document.querySelectorAll(".circle-height-pic"),
+      [circleSpeedDown, circleSpeedUp] = document.querySelectorAll(".circle-speed-pic");
 
-// const [heightFirstDigit, heightSecondDigit] = document.querySelectorAll(".height-table-item");
+const heightTable = document.querySelectorAll(".height-table-item"),
+      [heightFirstDigit, heightSecondDigit] = heightTable;
 
-// function incrDigit(selector) {
-//     if (selector.digit)
-// }
+const speedSymbols = document.querySelectorAll(".speed-table-item"),
+      [speedSign, ...speedTable] = speedSymbols,
+      [speedFirstDigit, speedSecondDigit] = speedTable;
+console.log(speedFirstDigit.innerHTML);
+      
 
-//Speed and height settings throught circles start
+
+
+circleHeightUp.addEventListener("click", () => {
+    incrDigit(heightFirstDigit, heightSecondDigit, 3, heightTable, 1);
+});
+
+circleHeightDown.addEventListener("click", () => {
+    decrDigit(heightFirstDigit, heightSecondDigit, 0, heightTable, 1);
+});
+
+circleSpeedUp.addEventListener("click", () => {
+    if (speedSign.dataset.sign == "+") {
+        incrDigit(speedFirstDigit, speedSecondDigit, 5, speedTable, 5);
+    } 
+    else if (speedSign.dataset.sign == "0") {
+        incrDigit(speedFirstDigit, speedSecondDigit, 5, speedTable, 5);
+        speedSign.setAttribute("data-sign", "+");
+        speedSign.innerHTML = `<img src="assets/images/nums/${speedSign.dataset.sign}.png" alt="sign">`;
+    } else {
+        decrDigit(speedFirstDigit, speedSecondDigit, -5, speedTable, 5);
+        if ((speedFirstDigit.dataset.digit == "0") && (speedSecondDigit.dataset.digit == "0")) {
+            speedSign.setAttribute("data-sign", 0);
+            speedSign.innerHTML = '';
+        }
+    }
+});
+
+circleSpeedDown.addEventListener("click", () => {
+    if (speedSign.dataset.sign == "+") {
+        decrDigit(speedFirstDigit, speedSecondDigit, 0, speedTable, 5);
+        if ((speedFirstDigit.dataset.digit == "0") && (speedSecondDigit.dataset.digit == "0")) {
+            speedSign.setAttribute("data-sign", 0);
+            speedSign.innerHTML = '';
+        } 
+    } else if (speedSecondDigit.dataset.digit == "0") {
+        incrDigit(speedFirstDigit, speedSecondDigit, 5, speedTable, 5);
+        speedSign.setAttribute("data-sign", "-");
+        speedSign.innerHTML = `<img src="assets/images/nums/${speedSign.dataset.sign}.png" alt="sign">`;
+    } else {
+        incrDigit(speedFirstDigit, speedSecondDigit, 5, speedTable, 5);
+    }
+});
+
+function decrDigit(firstDigit, secondDigit, minDigit, table, step) {
+    if ((secondDigit.dataset.digit > minDigit) || (firstDigit.dataset.digit > minDigit)){
+
+        if (secondDigit.dataset.digit == '0') {
+            secondDigit.setAttribute("data-digit", 10 - step);
+            secondDigit.innerHTML = `<img src="assets/images/nums/${secondDigit.dataset.digit}.png" alt="digit"></img>`;
+    
+            firstDigit.setAttribute("data-digit", +firstDigit.dataset.digit - 1);
+            
+            if (firstDigit.dataset.digit == "0") {
+                firstDigit.innerHTML = ``;    
+            } else {
+                firstDigit.innerHTML = `<img src="assets/images/nums/${firstDigit.dataset.digit}.png" alt="digit"></img>`;
+            }
+            
+        } else {
+            secondDigit.setAttribute("data-digit", +secondDigit.dataset.digit - step);
+            secondDigit.innerHTML = `<img src="assets/images/nums/${secondDigit.dataset.digit}.png" alt="digit"></img>`;
+        }
+        // check if |00000| then del
+        if ((firstDigit.dataset.digit == "0") && (secondDigit.dataset.digit == "0")) {
+            deleteZeros(table);
+        }
+
+    }
+}
+
+
+function incrDigit(firstDigit, secondDigit, maxDigit, table, step) {
+    if ((firstDigit.dataset.digit == "0") && (secondDigit.dataset.digit == "0")) {
+        createZeroes(table);
+    }
+
+    if (firstDigit.dataset.digit < maxDigit) {
+
+        if (secondDigit.dataset.digit == `${10 - step}`) {
+            secondDigit.setAttribute("data-digit", 0);
+            secondDigit.innerHTML = `<img src="assets/images/nums/${secondDigit.dataset.digit}.png" alt="digit"></img>`;
+    
+            firstDigit.setAttribute("data-digit", +firstDigit.dataset.digit + 1);
+            firstDigit.innerHTML = `<img src="assets/images/nums/${firstDigit.dataset.digit}.png" alt="digit"></img>`;
+        } else {
+            secondDigit.setAttribute("data-digit", +secondDigit.dataset.digit + step);
+            secondDigit.innerHTML = `<img src="assets/images/nums/${secondDigit.dataset.digit}.png" alt="digit"></img>`;
+        }
+    }
+
+}
+
+function deleteZeros(table) {
+    for (let i = 1; i < table.length - 1; i++){
+        table[i].innerHTML = '';
+    }
+}
+
+function createZeroes(table) {
+    for (let i = 1; i < table.length - 1; i++){
+        console.log(table[i]);
+        table[i].innerHTML = `<img src="assets/images/nums/${table[i].dataset.digit}.png" alt="digit"></img>`;
+    }
+}
+
+//Speed and height settings throught circles end

@@ -178,10 +178,15 @@ table {
     left: 250px;
 }
 
-/* .speed-table-item{
+.height-table-item{
     height: 100%;
     width: 25px;
-} */
+}
+
+.speed-table-item{
+    height: 100%;
+    width: 25px;
+}
 
 /* Height and speed setting end */
 
