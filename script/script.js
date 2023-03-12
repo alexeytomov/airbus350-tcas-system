@@ -19,7 +19,7 @@ class Airbus {
         this.animation = this.plane.animate(
             createKeyframes(this.width, this.height, this.speed, this.isRight),
             {
-                duration: 5000,
+                duration: 8000,
                 iteratuions: 1,
                 fill: 'forwards'
             }
@@ -277,7 +277,7 @@ document.querySelector("#start-button").addEventListener("mouseover", () => { //
     rightSpeedSetter.save();
 
 
-    leftPlane.changeSettings(calculateHeightPercentLeft(leftHeightSetter.height, +h1.textContent.slice(2) ) * 150, leftSpeedSetter.speed / 10);
+    leftPlane.changeSettings(calculateHeightPercentLeft(leftHeightSetter.height, +h2.textContent.slice(2) ) * 150, leftSpeedSetter.speed / 10);
     rightPlane.changeSettings(calculateHeightPercent(rightHeightSetter.height, +h2.textContent.slice(2) ) * 150, rightSpeedSetter.speed / 10);
     
 
