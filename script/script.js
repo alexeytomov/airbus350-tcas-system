@@ -1,95 +1,43 @@
+
 //Plane movement start
 
 class Airbus {
-    constructor(selector, number) {
+    constructor(selector) {
         this.plane = document.querySelector(selector);
         this.isRight = +this.plane.dataset.number - 1; // 2: isRight = true,  1: isRight = false
+        this.width = 1700;
+        this.height, this.speed;//поля для динамической настройки полета
     }
 
-    start(maxWidth, maxHeight, speed=1) {
-        this.plane.animate(
-            createKeyframes(maxWidth, maxHeight, speed, this.isRight),
+    changeSettings(height, speed) {
+        this.height = height;
+        this.speed = speed;
+        
+    }
+
+    start() {
+        this.animation = this.plane.animate(
+            createKeyframes(this.width, this.height, this.speed, this.isRight),
             {
                 duration: 5000,
                 iteratuions: 1,
                 fill: 'forwards'
             }
-        )
+        );
+    //    document.querySelector("#start-button").removeEventListener("click", this.listener);
     }
-};
-
-const leftPlane = new Airbus(".left-plane", 1);
-const rightPlane = new Airbus(".right-plane", 2);
-
-
-
-document.querySelector("button").addEventListener("click", () => {
-    leftPlane.start(1300, 150, 0.5); // width | height | speed (0.5 long, 1 - center, 2 - start)
-    rightPlane.start(1300, 150, 2); 
-});
-
-
-function createKeyframes(maxWidth, maxHeight, speed, isRight) {
-    let frames = [];
-    let currentWidth = 0,
-        currentHeight = 0;
-
-    while ((currentWidth < maxWidth) || (currentHeight < maxHeight)) {
-        currentWidth += 25;
-        currentHeight = Math.floor(Math.sqrt(30*currentWidth*speed));
-        console.log(speed);
     
-        if (currentHeight > maxHeight) {
-            currentHeight = maxHeight;
-        }
-        if (isRight){
-            frames.push({transform: `translate(-${currentWidth}px, -${currentHeight}px)`});
-        } else {
-            frames.push({transform: `translate(${currentWidth}px, ${currentHeight}px)`});
-        }
+    end() {
+        this.animation.cancel();
     }
-    return frames;
 }
-
-
-//Plane movement end
-
-
-//Set Heigth levels start
-
-const [h1, h2] = document.querySelectorAll(".height");
-getDynamicInformation("#h1");
-getDynamicInformation("#h2");
-
-function getDynamicInformation(selector) {
-    const input = document.querySelector(selector);
-    input.addEventListener('input', () => {
-        switch(input.getAttribute('data-height')) {
-            case "1":
-                h1.textContent = "FL" + input.value;
-                break;
-            case "2":
-                h2.textContent = "FL" + input.value;
-                break;
-        }
-    });
-}
-
-//Set Height levels end
-
-//Speed and height settings throught circles start
-
-const [circleHeightDown, circleHeightUp] = document.querySelectorAll(".circle-height-pic"),
-      [circleSpeedDown, circleSpeedUp] = document.querySelectorAll(".circle-speed-pic");
-
-      
-// Class for speed and height panel start
 
 class HeightSetter {
     constructor(wrapperSelector) {
         this.wrapper = document.querySelector(wrapperSelector);
         this.table = this.wrapper.querySelectorAll(".height-table-item");
         [this.firstDigit, this.secondDigit] = this.wrapper.querySelectorAll(".height-table-item");
+        this.height = this.firstDigit.dataset.digit + this.secondDigit.dataset.digit;
 
         this.increase = () => { //listener (для удаление нужен тот же объект)
             incrDigit(this.firstDigit, this.secondDigit, 3, this.table, 1);
@@ -124,6 +72,7 @@ class SpeedSetter {
         this.wrapper = document.querySelector(wrapperSelector);
         [this.sign, ...this.table] = this.wrapper.querySelectorAll(".speed-table-item");
         [this.firstDigit, this.secondDigit] = this.table;
+        this.speed = this.sign.dataset.sign + this.firstDigit.dataset.digit + this.secondDigit.dataset.digit;
 
         this.increase = () => { //listener (для удаление нужен тот же объект)
             if (this.sign.dataset.sign == "+") {
@@ -158,16 +107,14 @@ class SpeedSetter {
             }
         }
     }
-
     render() {
         circleSpeedUp.addEventListener("click", this.increase);
         circleSpeedDown.addEventListener("click", this.decrease);
 
         this.wrapper.style.display = "flex";
     }
-
     save() {
-        this.speed = this.firstDigit.dataset.digit + this.secondDigit.dataset.digit;
+        this.speed = this.sign.dataset.sign + this.firstDigit.dataset.digit + this.secondDigit.dataset.digit;
     }
 
     delete() {
@@ -178,6 +125,91 @@ class SpeedSetter {
     }
 }
 
+const leftPlane = new Airbus(".left-plane");
+const rightPlane = new Airbus(".right-plane");
+
+
+    //leftPlane.render(1300, 100, 2.5); // width | height | speed (0.5 long, 1 - center, 2 - start)
+    //rightPlane.start(1300, 100, 2.5); //Height - высчитываем процент  высоты на пульте от настроенной высоты получеем коэф, на который умножим 150 (получим макс высоту)
+    //исправить скорость движения (самолет при низкой скорости наборе высоты начинает ускорятся) 
+    // инициализировать кнопку restart
+// });
+
+
+function createKeyframes(maxWidth, maxHeight, speed, isRight) {
+    let frames = [];
+    let currentWidth = 0,
+        currentHeight = 0;
+
+    if ((speed == 0) && (isRight)) {
+        frames.push({transform: `translateX(-${maxWidth}px)`});
+        return frames;
+    } else if ((speed == 0) && !(isRight)) {
+        frames.push({transform: `translateX(${maxWidth}px)`});
+        return frames;
+    }
+    
+    while ((currentWidth < maxWidth)) {
+        currentWidth += 25;
+        currentHeight = Math.floor(Math.sqrt(15*currentWidth * Math.abs(speed)));
+    
+        if (currentHeight > maxHeight) {
+            currentHeight = maxHeight;
+        }
+
+        //put frame to array for plane(1 | 2)
+        if (isRight){
+            if (speed > 0) {
+                frames.push({transform: `translate(-${currentWidth}px, -${currentHeight}px)`});
+            } else if (speed < 0){
+                frames.push({transform: `translate(-${currentWidth}px, ${currentHeight}px)`});
+            }
+        } else {
+            if (speed > 0){
+                frames.push({transform: `translate(${currentWidth}px, -${currentHeight}px)`});
+            } else if (speed < 0) {
+                frames.push({transform: `translate(${currentWidth}px, ${currentHeight}px)`});
+            }
+        }
+    }
+    return frames;
+}
+
+
+//Plane movement end
+
+
+//Set Heigth levels start
+
+const [h1, h2] = document.querySelectorAll(".height");
+
+
+
+getDynamicInformation("#h1");
+getDynamicInformation("#h2");
+
+function getDynamicInformation(selector) {
+    const input = document.querySelector(selector);
+    input.addEventListener('input', () => {
+        switch(input.getAttribute('data-height')) {
+            case "1":
+                h1.textContent = "FL" + input.value;
+                break;
+            case "2":
+                h2.textContent = "FL" + input.value;
+                break;
+        }
+    });
+}
+
+//Set Height levels end
+
+//Speed and height settings throught circles start
+
+const [circleHeightDown, circleHeightUp] = document.querySelectorAll(".circle-height-pic"),
+      [circleSpeedDown, circleSpeedUp] = document.querySelectorAll(".circle-speed-pic");
+
+      
 // Chosing airbus (left| right) 
 const choiceLeft = document.querySelector("#planeChoice1"),
       choiceRight = document.querySelector("#planeChoice2");
@@ -225,7 +257,50 @@ function changeAirbuses(newControlSetter, oldControlSetter) {
     }
 }
 
-//Function for dynamic height and speed setting
+
+// flight with current settings
+
+function calculateHeightPercent(heightSettings, heightLevel) {
+    return ((heightSettings * 1000) / heightLevel); //находим какой процент от ровня высоты составляет текущая настройка
+    // height settings X1000 (настройки исчисляются в КМ)
+}
+
+function calculateHeightPercentLeft(heightSettings, heightLevel) {
+    return (1 - ((heightSettings * 1000) / heightLevel) % 1); //тк точка отсчета выше чем уровень высоты указываем текущую высоту в другой СС (сверху)
+}    // формула: 1 - ( currentHeight / hieghtLevel) % 1
+
+//Кнопка Старт
+document.querySelector("#start-button").addEventListener("mouseover", () => { //наведение мыши на START применяет новые параметры
+    leftHeightSetter.save(); //сохраняем данные в поле height | speed
+    leftSpeedSetter.save();
+    rightHeightSetter.save();
+    rightSpeedSetter.save();
+
+
+    leftPlane.changeSettings(calculateHeightPercentLeft(leftHeightSetter.height, +h1.textContent.slice(2) ) * 150, leftSpeedSetter.speed / 10);
+    rightPlane.changeSettings(calculateHeightPercent(rightHeightSetter.height, +h2.textContent.slice(2) ) * 150, rightSpeedSetter.speed / 10);
+    
+
+    // leftPlane.changeSettings(calculateHeightPercent(2 *(50000 - +h1.textContent.slice(2)) - leftHeightSetter.height, //тк точка отсчета выше чем уровень высоты указываем текущую высоту в другой СС (сверху)
+    //                                                  +h2.textContent.slice(2) ) * 150, leftSpeedSetter.speed / 10);
+});
+
+document.querySelector("#start-button").addEventListener("click", () => {
+    leftPlane.start();
+    rightPlane.start();
+});
+
+
+//Кнопка Рестарт
+document.querySelector("#restart-button").addEventListener("click", () => {
+    leftPlane.end();
+    rightPlane.end();
+});
+
+
+
+
+// controlSetter function (dynamic digit changes)
 
 function decrDigit(firstDigit, secondDigit, minDigit, table, step) {
     if ((secondDigit.dataset.digit > minDigit) || (firstDigit.dataset.digit > minDigit)){
@@ -248,9 +323,8 @@ function decrDigit(firstDigit, secondDigit, minDigit, table, step) {
         }
         // check if |00000| then del
         if ((firstDigit.dataset.digit == "0") && (secondDigit.dataset.digit == "0")) {
-            deleteZeros(table);
+            deleteZeroes(table);
         }
-
     }
 }
 
@@ -276,7 +350,7 @@ function incrDigit(firstDigit, secondDigit, maxDigit, table, step) {
 
 }
 
-function deleteZeros(table) {
+function deleteZeroes(table) {
     for (let i = 1; i < table.length - 1; i++){
         table[i].innerHTML = '';
     }
@@ -287,4 +361,3 @@ function createZeroes(table) {
         table[i].innerHTML = `<img src="assets/images/nums/${table[i].dataset.digit}.png" alt="digit"></img>`;
     }
 }
-
