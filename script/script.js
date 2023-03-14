@@ -19,7 +19,7 @@ class Airbus {
         this.animation = this.plane.animate(
             createKeyframes(this.width, this.height, this.speed, this.isRight),
             {
-                duration: 8000,
+                duration: 18000,
                 iteratuions: 1,
                 fill: 'forwards'
             }
@@ -151,7 +151,7 @@ function createKeyframes(maxWidth, maxHeight, speed, isRight) {
     
     while ((currentWidth < maxWidth)) {
         currentWidth += 25;
-        currentHeight = Math.floor(Math.sqrt(15*currentWidth * Math.abs(speed)));
+        currentHeight = Math.floor(Math.sqrt(70*currentWidth * Math.abs(speed)));
     
         if (currentHeight > maxHeight) {
             currentHeight = maxHeight;
@@ -183,24 +183,27 @@ function createKeyframes(maxWidth, maxHeight, speed, isRight) {
 
 const [h1, h2] = document.querySelectorAll(".height");
 
+h1.textContent = "FL" + 11000;  
+h2.textContent = "FL" + 10000;
 
+//настройка уровней высоты динамическая
 
-getDynamicInformation("#h1");
-getDynamicInformation("#h2");
+// getDynamicInformation("#h1");
+// getDynamicInformation("#h2");
 
-function getDynamicInformation(selector) {
-    const input = document.querySelector(selector);
-    input.addEventListener('input', () => {
-        switch(input.getAttribute('data-height')) {
-            case "1":
-                h1.textContent = "FL" + input.value;
-                break;
-            case "2":
-                h2.textContent = "FL" + input.value;
-                break;
-        }
-    });
-}
+// function getDynamicInformation(selector) {
+//     const input = document.querySelector(selector);
+//     input.addEventListener('input', () => {
+//         switch(input.getAttribute('data-height')) {
+//             case "1":
+//                 h1.textContent = "FL" + input.value;
+//                 break;
+//             case "2":
+//                 h2.textContent = "FL" + input.value;
+//                 break;
+//         }
+//     });
+// }
 
 //Set Height levels end
 
@@ -271,8 +274,6 @@ function calculateHeightPercentLeft(heightSettings, heightLevel) {
 
 //Кнопка Старт
 document.querySelector("#start-button").addEventListener("mouseover", () => { //наведение мыши на START применяет новые параметры
-    leftHeightSetter.save(); //сохраняем данные в поле height | speed
-    leftSpeedSetter.save();
     rightHeightSetter.save();
     rightSpeedSetter.save();
 
@@ -285,7 +286,10 @@ document.querySelector("#start-button").addEventListener("mouseover", () => { //
     //                                                  +h2.textContent.slice(2) ) * 150, leftSpeedSetter.speed / 10);
 });
 
-document.querySelector("#start-button").addEventListener("click", () => {
+document.querySelector("#start-button").addEventListener("click", () => {   
+    if (leftPlane.animation?.playState == "running" || rightPlane.animation?.playState == "running") { //если анимация запущена - не запускать по новой
+        return;
+    }
     leftPlane.start();
     rightPlane.start();
 });
