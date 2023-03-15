@@ -268,6 +268,11 @@ function calculateHeightPercent(heightSettings, heightLevel) {
 }
 
 function calculateHeightPercentLeft(heightSettings, H1, H2) {
+    let k = 55 / 150; //добавочный коэффициент для преодоления блока buffer
+    if (heightSettings * 1000 < H1) {
+        return Math.abs(H1 + H2 - heightSettings * 1000) / H2 + k; //
+    }
+    
     return Math.abs(H1 + H2 - heightSettings * 1000) / H2; 
     // return (1 - ((heightSettings * 1000) / heightLevel) % 1); //тк точка отсчета выше чем уровень высоты указываем текущую высоту в другой СС (сверху)
 }    // формула: 1 - ( currentHeight / hieghtLevel) % 1
