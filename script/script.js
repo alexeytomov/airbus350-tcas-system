@@ -16,7 +16,6 @@ class Airbus {
     }
 
     start() {
-        if (this.height)
         this.animation = this.plane.animate(
             createKeyframes(this.width, this.height, this.speed, this.isRight),
             {
@@ -25,7 +24,6 @@ class Airbus {
                 fill: 'forwards'
             }
         );
-    //    document.querySelector("#start-button").removeEventListener("click", this.listener);
     }
     
     end() {
@@ -291,6 +289,19 @@ document.querySelector("#start-button").addEventListener("click", () => {
     if (leftPlane.animation?.playState == "running" || rightPlane.animation?.playState == "running") { //если анимация запущена - не запускать по новой
         return;
     }
+
+    if ((+leftHeightSetter.height * 1000 > +h1.textContent.slice(2) + +h2.textContent.slice(2)) && (+leftSpeedSetter.speed < 0) || //current > start but speed < 0
+        (+leftHeightSetter.height * 1000 < +h1.textContent.slice(2) + +h2.textContent.slice(2)) && (+leftSpeedSetter.speed > 0) || //current < start but speed > 0
+        (+leftHeightSetter.height * 1000 != +h1.textContent.slice(2) + +h2.textContent.slice(2)) && (+leftSpeedSetter.speed == 0)){ //current = start but speed != 0
+        throw "Error (leftPlane): Height and Speed don`t match each other";
+    }
+
+    if ((+rightSpeedSetter.speed < 0) || //start == 0 (default) but speed < 0
+        (+rightHeightSetter.height == 0) && (+rightSpeedSetter.speed > 0) || //current == start but speed > 0
+        (+rightHeightSetter.height != 0) && (+rightSpeedSetter.speed == 0)) { //current != start but speed == 0
+        throw "Error (rightPlane): Height and Speed don`t match each other";
+    }
+
     leftPlane.start();
     rightPlane.start();
 });
