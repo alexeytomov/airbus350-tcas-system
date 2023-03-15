@@ -263,17 +263,17 @@ function changeAirbuses(newControlSetter, oldControlSetter) {
 // flight with current settings
 
 function calculateHeightPercent(heightSettings, heightLevel) {
-    return ((heightSettings * 1000) / heightLevel); //находим какой процент от ровня высоты составляет текущая настройка
+    return ((heightSettings * 100) / heightLevel); //находим какой процент от ровня высоты составляет текущая настройка
     // height settings X1000 (настройки исчисляются в КМ)
 }
 
 function calculateHeightPercentLeft(heightSettings, H1, H2) {
     let k = 55 / 150; //добавочный коэффициент для преодоления блока buffer
-    if (heightSettings * 1000 < H1) {
-        return Math.abs(H1 + H2 - heightSettings * 1000) / H2 + k; //
+    if (heightSettings * 100 < H1) {
+        return Math.abs(H1 + H2 - heightSettings * 100) / H2 + k; //
     }
     
-    return Math.abs(H1 + H2 - heightSettings * 1000) / H2; 
+    return Math.abs(H1 + H2 - heightSettings * 100) / H2; 
     // return (1 - ((heightSettings * 1000) / heightLevel) % 1); //тк точка отсчета выше чем уровень высоты указываем текущую высоту в другой СС (сверху)
 }    // формула: 1 - ( currentHeight / hieghtLevel) % 1
 
@@ -285,7 +285,7 @@ document.querySelector("#start-button").addEventListener("mouseover", () => { //
     leftHeightSetter.save();
     leftSpeedSetter.save();
 
-    leftPlane.changeSettings(calculateHeightPercentLeft(leftHeightSetter.height, +h1.textContent.slice(2), +h2.textContent.slice(2) ) * 150, leftSpeedSetter.speed / 10);
+    leftPlane.changeSettings(calculateHeightPercentLeft(leftHeightSetter.height, +h1.textContent.slice(3), +h2.textContent.slice(3) ) * 150, leftSpeedSetter.speed / 10);
     
     rightPlane.changeSettings(calculateHeightPercent(rightHeightSetter.height, +h2.textContent.slice(2) ) * 135, rightSpeedSetter.speed / 10);
 });
@@ -295,9 +295,9 @@ document.querySelector("#start-button").addEventListener("click", () => {
         return;
     }
 
-    if ((+leftHeightSetter.height * 1000 > +h1.textContent.slice(2) + +h2.textContent.slice(2)) && (+leftSpeedSetter.speed < 0) || //current > start but speed < 0
-        (+leftHeightSetter.height * 1000 < +h1.textContent.slice(2) + +h2.textContent.slice(2)) && (+leftSpeedSetter.speed > 0) || //current < start but speed > 0
-        (+leftHeightSetter.height * 1000 != +h1.textContent.slice(2) + +h2.textContent.slice(2)) && (+leftSpeedSetter.speed == 0)){ //current = start but speed != 0
+    if ((+leftHeightSetter.height * 100 > +h1.textContent.slice(3) + +h2.textContent.slice(3)) && (+leftSpeedSetter.speed < 0) || //current > start but speed < 0
+        (+leftHeightSetter.height * 100 < +h1.textContent.slice(3) + +h2.textContent.slice(3)) && (+leftSpeedSetter.speed > 0) || //current < start but speed > 0
+        (+leftHeightSetter.height * 100 != +h1.textContent.slice(3) + +h2.textContent.slice(3)) && (+leftSpeedSetter.speed == 0)){ //current = start but speed != 0
         throw "Error (leftPlane): Height and Speed don`t match each other";
     }
 
@@ -431,7 +431,7 @@ function decrDigitHeight(firstDigit, secondDigit, thirdDigit, minDigit, table, s
             } else {
                 secondDigit.setAttribute("data-digit", +secondDigit.dataset.digit - 1);
 
-                if (secondDigit.dataset.digit == "0") {
+                if ((secondDigit.dataset.digit == "0") && (firstDigit.dataset.digit == "0")){
                     secondDigit.innerHTML = ``;
                 } else {
                     secondDigit.innerHTML = `<img src="assets/images/nums/${secondDigit.dataset.digit}.png" alt="digit"></img>`;
@@ -452,9 +452,7 @@ function decrDigitHeight(firstDigit, secondDigit, thirdDigit, minDigit, table, s
             }
         } else if (firstDigit.dataset.digit == "0") {
             firstDigit.innerHTML = '';
-        } else if (secondDigit.dataset.digit == "0") {
-            secondDigit.innerHTML = '';
-        }
+        } 
     }
 }
 
