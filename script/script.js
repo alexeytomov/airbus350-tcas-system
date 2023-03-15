@@ -35,15 +35,15 @@ class HeightSetter {
     constructor(wrapperSelector) {
         this.wrapper = document.querySelector(wrapperSelector);
         this.table = this.wrapper.querySelectorAll(".height-table-item");
-        [this.firstDigit, this.secondDigit] = this.wrapper.querySelectorAll(".height-table-item");
+        [this.firstDigit, this.secondDigit, this.thirdDigit] = this.wrapper.querySelectorAll(".height-table-item");
         this.height = this.firstDigit.dataset.digit + this.secondDigit.dataset.digit;
 
         this.increase = () => { //listener (для удаление нужен тот же объект)
-            incrDigit(this.firstDigit, this.secondDigit, 3, this.table, 5);
+            incrDigitHeight(this.firstDigit, this.secondDigit, this.thirdDigit, 3, this.table, 5);
         }
 
         this.decrease = () => {
-            decrDigit(this.firstDigit, this.secondDigit, 0, this.table, 5);
+            decrDigitHeight(this.firstDigit, this.secondDigit, this.thirdDigit, 0, this.table, 5);
         }
     }
 
@@ -350,6 +350,7 @@ function decrDigit(firstDigit, secondDigit, minDigit, table, step) {
 }
 
 
+
 function incrDigit(firstDigit, secondDigit, maxDigit, table, step) {
     if ((firstDigit.dataset.digit == "0") && (secondDigit.dataset.digit == "0")) {
         createZeroes(table);
@@ -370,6 +371,93 @@ function incrDigit(firstDigit, secondDigit, maxDigit, table, step) {
     }
 
 }
+
+function incrDigitHeight(firstDigit, secondDigit, thirdDigit, maxDigit, table, step) {
+    if ((firstDigit.dataset.digit == "0") && (secondDigit.dataset.digit == "0") && (thirdDigit.dataset.digit == "0")) {
+        //create zeroes
+        for (let i = 3; i < table.length; i++){
+            table[i].innerHTML = `<img src="assets/images/nums/${table[i].dataset.digit}.png" alt="digit"></img>`;
+        }
+    }
+
+    if (firstDigit.dataset.digit < maxDigit) {
+
+        if (thirdDigit.dataset.digit == `${10 - step}`) {
+            thirdDigit.setAttribute("data-digit", 0);
+            thirdDigit.innerHTML = `<img src="assets/images/nums/${thirdDigit.dataset.digit}.png" alt="digit"></img>`;
+            
+            if (secondDigit.dataset.digit == `${10 - 1}`) {
+                // перенос единицы в первый разряд
+                secondDigit.setAttribute("data-digit", 0);
+                secondDigit.innerHTML = `<img src="assets/images/nums/${secondDigit.dataset.digit}.png" alt="digit"></img>`;
+
+                //добавление едининцы в старший разряд
+                firstDigit.setAttribute("data-digit", +firstDigit.dataset.digit + 1);
+                firstDigit.innerHTML = `<img src="assets/images/nums/${firstDigit.dataset.digit}.png" alt="digit"></img>`;
+            } else {
+                secondDigit.setAttribute("data-digit", +secondDigit.dataset.digit + 1);
+                secondDigit.innerHTML = `<img src="assets/images/nums/${secondDigit.dataset.digit}.png" alt="digit"></img>`;
+            }
+            
+        } else {
+            thirdDigit.setAttribute("data-digit", +thirdDigit.dataset.digit + step);
+            thirdDigit.innerHTML = `<img src="assets/images/nums/${thirdDigit.dataset.digit}.png" alt="digit"></img>`;
+        }
+
+    }
+
+}
+
+function decrDigitHeight(firstDigit, secondDigit, thirdDigit, minDigit, table, step) {
+    if ((thirdDigit.dataset.digit > minDigit) || (secondDigit.dataset.digit > minDigit) || (firstDigit.dataset.digit > minDigit)){
+
+        if (thirdDigit.dataset.digit == '0') {
+            thirdDigit.setAttribute("data-digit", 10 - step);
+            thirdDigit.innerHTML = `<img src="assets/images/nums/${thirdDigit.dataset.digit}.png" alt="digit"></img>`;
+            
+            //уменьшаем старший разряд #2
+            if (secondDigit.dataset.digit == '0') {
+                secondDigit.setAttribute("data-digit", 10 - 1);
+                secondDigit.innerHTML = `<img src="assets/images/nums/${secondDigit.dataset.digit}.png" alt="digit"></img>`;
+                
+                firstDigit.setAttribute("data-digit", +firstDigit.dataset.digit - 1);
+                
+                if (firstDigit.dataset.digit == "0") {
+                    firstDigit.innerHTML = ``; //убираем элемент
+                } else {
+                    firstDigit.innerHTML = `<img src="assets/images/nums/${firstDigit.dataset.digit}.png" alt="digit"></img>`;
+                }
+                
+            } else {
+                secondDigit.setAttribute("data-digit", +secondDigit.dataset.digit - 1);
+
+                if (secondDigit.dataset.digit == "0") {
+                    secondDigit.innerHTML = ``;
+                } else {
+                    secondDigit.innerHTML = `<img src="assets/images/nums/${secondDigit.dataset.digit}.png" alt="digit"></img>`;
+                }
+                
+            }
+        }
+
+        else {
+            thirdDigit.setAttribute("data-digit", +thirdDigit.dataset.digit - step);
+            thirdDigit.innerHTML = `<img src="assets/images/nums/${thirdDigit.dataset.digit}.png" alt="digit"></img>`;
+        }
+
+        // check if |00000| then del
+        if ((firstDigit.dataset.digit == "0") && (secondDigit.dataset.digit == "0") && (thirdDigit.dataset.digit == "0")) {
+            for (let i = 0; i < table.length - 1; i++){
+                table[i].innerHTML = '';
+            }
+        } else if (firstDigit.dataset.digit == "0") {
+            firstDigit.innerHTML = '';
+        } else if (secondDigit.dataset.digit == "0") {
+            secondDigit.innerHTML = '';
+        }
+    }
+}
+
 
 function deleteZeroes(table) {
     for (let i = 1; i < table.length - 1; i++){
