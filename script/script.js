@@ -16,6 +16,7 @@ class Airbus {
     }
 
     start() {
+        if (this.height)
         this.animation = this.plane.animate(
             createKeyframes(this.width, this.height, this.speed, this.isRight),
             {
@@ -40,11 +41,11 @@ class HeightSetter {
         this.height = this.firstDigit.dataset.digit + this.secondDigit.dataset.digit;
 
         this.increase = () => { //listener (для удаление нужен тот же объект)
-            incrDigit(this.firstDigit, this.secondDigit, 3, this.table, 1);
+            incrDigit(this.firstDigit, this.secondDigit, 3, this.table, 5);
         }
 
         this.decrease = () => {
-            decrDigit(this.firstDigit, this.secondDigit, 0, this.table, 1);
+            decrDigit(this.firstDigit, this.secondDigit, 0, this.table, 5);
         }
     }
 
@@ -150,7 +151,7 @@ function createKeyframes(maxWidth, maxHeight, speed, isRight) {
     }
     
     while ((currentWidth < maxWidth)) {
-        currentWidth += 25;
+        currentWidth += 15;
         currentHeight = Math.floor(Math.sqrt(70*currentWidth * Math.abs(speed)));
     
         if (currentHeight > maxHeight) {
@@ -278,8 +279,8 @@ document.querySelector("#start-button").addEventListener("mouseover", () => { //
     rightSpeedSetter.save();
 
 
-    leftPlane.changeSettings(calculateHeightPercentLeft(leftHeightSetter.height, +h2.textContent.slice(2) ) * 150, leftSpeedSetter.speed / 10);
-    rightPlane.changeSettings(calculateHeightPercent(rightHeightSetter.height, +h2.textContent.slice(2) ) * 150, rightSpeedSetter.speed / 10);
+    leftPlane.changeSettings(calculateHeightPercentLeft(leftHeightSetter.height, +h2.textContent.slice(2) ) * 130, leftSpeedSetter.speed / 10);
+    rightPlane.changeSettings(calculateHeightPercent(rightHeightSetter.height, +h2.textContent.slice(2) ) * 135, rightSpeedSetter.speed / 10);
     
 
     // leftPlane.changeSettings(calculateHeightPercent(2 *(50000 - +h1.textContent.slice(2)) - leftHeightSetter.height, //тк точка отсчета выше чем уровень высоты указываем текущую высоту в другой СС (сверху)
