@@ -36,7 +36,7 @@ class HeightSetter {
         this.wrapper = document.querySelector(wrapperSelector);
         this.table = this.wrapper.querySelectorAll(".height-table-item");
         [this.firstDigit, this.secondDigit, this.thirdDigit] = this.wrapper.querySelectorAll(".height-table-item");
-        this.height = this.firstDigit.dataset.digit + this.secondDigit.dataset.digit;
+        this.height = this.firstDigit.dataset.digit + this.secondDigit.dataset.digit + this.thirdDigit.dataset.digit;
 
         this.increase = () => { //listener (для удаление нужен тот же объект)
             incrDigitHeight(this.firstDigit, this.secondDigit, this.thirdDigit, 3, this.table, 5);
@@ -55,7 +55,7 @@ class HeightSetter {
     }
 
     save() {
-        this.height = this.firstDigit.dataset.digit + this.secondDigit.dataset.digit;
+        this.height = this.firstDigit.dataset.digit + this.secondDigit.dataset.digit + this.thirdDigit.dataset.digit;
     }
 
     delete() {
@@ -274,8 +274,7 @@ function calculateHeightPercentLeft(heightSettings, H1, H2) {
     }
     
     return Math.abs(H1 + H2 - heightSettings * 100) / H2; 
-    // return (1 - ((heightSettings * 1000) / heightLevel) % 1); //тк точка отсчета выше чем уровень высоты указываем текущую высоту в другой СС (сверху)
-}    // формула: 1 - ( currentHeight / hieghtLevel) % 1
+}    
 
 
 //Кнопка Старт
@@ -285,7 +284,7 @@ document.querySelector("#start-button").addEventListener("mouseover", () => { //
     leftHeightSetter.save();
     leftSpeedSetter.save();
 
-    leftPlane.changeSettings(calculateHeightPercentLeft(leftHeightSetter.height, +h1.textContent.slice(3), +h2.textContent.slice(3) ) * 150, leftSpeedSetter.speed / 10);
+    leftPlane.changeSettings(calculateHeightPercentLeft(leftHeightSetter.height, +h1.textContent.slice(2), +h2.textContent.slice(2) ) * 150, leftSpeedSetter.speed / 10);
     
     rightPlane.changeSettings(calculateHeightPercent(rightHeightSetter.height, +h2.textContent.slice(2) ) * 135, rightSpeedSetter.speed / 10);
 });
@@ -295,9 +294,9 @@ document.querySelector("#start-button").addEventListener("click", () => {
         return;
     }
 
-    if ((+leftHeightSetter.height * 100 > +h1.textContent.slice(3) + +h2.textContent.slice(3)) && (+leftSpeedSetter.speed < 0) || //current > start but speed < 0
-        (+leftHeightSetter.height * 100 < +h1.textContent.slice(3) + +h2.textContent.slice(3)) && (+leftSpeedSetter.speed > 0) || //current < start but speed > 0
-        (+leftHeightSetter.height * 100 != +h1.textContent.slice(3) + +h2.textContent.slice(3)) && (+leftSpeedSetter.speed == 0)){ //current = start but speed != 0
+    if ((+leftHeightSetter.height * 100 >= +h1.textContent.slice(2) + +h2.textContent.slice(2)) && (+leftSpeedSetter.speed < 0) || //current > start but speed < 0
+        (+leftHeightSetter.height * 100 <= +h1.textContent.slice(2) + +h2.textContent.slice(2)) && (+leftSpeedSetter.speed > 0) || //current < start but speed > 0
+        (+leftHeightSetter.height * 100 != +h1.textContent.slice(2) + +h2.textContent.slice(2)) && (+leftSpeedSetter.speed == 0)){ //current = start but speed != 0
         throw "Error (leftPlane): Height and Speed don`t match each other";
     }
 
