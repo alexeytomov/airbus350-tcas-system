@@ -182,8 +182,8 @@ function createKeyframes(maxWidth, maxHeight, speed, isRight) {
 
 const [h1, h2] = document.querySelectorAll(".height");
 
-h1.textContent = "FL" + 11000;  
-h2.textContent = "FL" + 10000;
+h1.textContent = "FL" + 11500;  
+h2.textContent = "FL" + 10500;
 
 //настройка уровней высоты динамическая
 
@@ -263,6 +263,12 @@ function changeAirbuses(newControlSetter, oldControlSetter) {
 // flight with current settings
 
 function calculateHeightPercent(heightSettings, heightLevel) {
+    let k = 65 / 150; //добавочный коэффициент для преодоления блока buffer (разняться из-за модели самолета (хвост выше))
+    if (heightSettings * 100 > heightLevel) {
+        return ((heightSettings * 100) / heightLevel + k); //
+    }
+    
+    
     return ((heightSettings * 100) / heightLevel); //находим какой процент от ровня высоты составляет текущая настройка
     // height settings X1000 (настройки исчисляются в КМ)
 }
