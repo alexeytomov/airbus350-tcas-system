@@ -269,22 +269,22 @@ function calculateHeightPercent(heightSettings, heightLevel) {
     // height settings X1000 (настройки исчисляются в КМ)
 }
 
-function calculateHeightPercentLeft(heightSettings, heightLevel) {
-    return (1 - ((heightSettings * 1000) / heightLevel) % 1); //тк точка отсчета выше чем уровень высоты указываем текущую высоту в другой СС (сверху)
+function calculateHeightPercentLeft(heightSettings, H1, H2) {
+    return Math.abs(H1 + H2 - heightSettings * 1000) / H2; 
+    // return (1 - ((heightSettings * 1000) / heightLevel) % 1); //тк точка отсчета выше чем уровень высоты указываем текущую высоту в другой СС (сверху)
 }    // формула: 1 - ( currentHeight / hieghtLevel) % 1
+
 
 //Кнопка Старт
 document.querySelector("#start-button").addEventListener("mouseover", () => { //наведение мыши на START применяет новые параметры
     rightHeightSetter.save();
     rightSpeedSetter.save();
+    leftHeightSetter.save();
+    leftSpeedSetter.save();
 
-
-    leftPlane.changeSettings(calculateHeightPercentLeft(leftHeightSetter.height, +h2.textContent.slice(2) ) * 130, leftSpeedSetter.speed / 10);
-    rightPlane.changeSettings(calculateHeightPercent(rightHeightSetter.height, +h2.textContent.slice(2) ) * 135, rightSpeedSetter.speed / 10);
+    leftPlane.changeSettings(calculateHeightPercentLeft(leftHeightSetter.height, +h1.textContent.slice(2), +h2.textContent.slice(2) ) * 150, leftSpeedSetter.speed / 10);
     
-
-    // leftPlane.changeSettings(calculateHeightPercent(2 *(50000 - +h1.textContent.slice(2)) - leftHeightSetter.height, //тк точка отсчета выше чем уровень высоты указываем текущую высоту в другой СС (сверху)
-    //                                                  +h2.textContent.slice(2) ) * 150, leftSpeedSetter.speed / 10);
+    rightPlane.changeSettings(calculateHeightPercent(rightHeightSetter.height, +h2.textContent.slice(2) ) * 135, rightSpeedSetter.speed / 10);
 });
 
 document.querySelector("#start-button").addEventListener("click", () => {   
