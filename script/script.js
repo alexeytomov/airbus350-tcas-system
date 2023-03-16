@@ -4,6 +4,7 @@
 class Airbus {
     constructor(selector) {
         this.plane = document.querySelector(selector);
+        this.time = 18000;
         this.isRight = +this.plane.dataset.number - 1; // 2: isRight = true,  1: isRight = false
         this.width = 1700;
         this.height, this.speed;//поля для динамической настройки полета
@@ -19,11 +20,19 @@ class Airbus {
         this.animation = this.plane.animate(
             createKeyframes(this.width, this.height, this.speed, this.isRight),
             {
-                duration: 18000,
+                duration: this.time,
                 iteratuions: 1,
                 fill: 'forwards'
             }
         );
+    }
+
+    pause() {
+        this.animation.pause();
+    }
+
+    play() {
+        this.animation.play();
     }
     
     end() {
@@ -295,10 +304,68 @@ document.querySelector("#start-button").addEventListener("mouseover", () => { //
     rightPlane.changeSettings(calculateHeightPercent(rightHeightSetter.height, +h2.textContent.slice(2) ) * 135, rightSpeedSetter.speed / 10);
 });
 
+
+//кнопка play
+playButton = document.querySelector(".play-button");
 document.querySelector("#start-button").addEventListener("click", () => {   
-    if (leftPlane.animation?.playState == "running" || rightPlane.animation?.playState == "running") { //если анимация запущена - не запускать по новой
+    if (leftPlane.animation?.playState == "running" || rightPlane.animation?.playState == "running" || 
+        leftPlane.animation?.playState == "paused" || rightPlane.animation?.playState == "paused") { //если анимация запущена - не запускать по новой
         return;
     }
+
+    if (+h1.textContent.slice(2) - +h2.textContent.slice(2) == 1000) {
+        setTimeout(() => {
+            setTimeout(() => {
+                alert("Минимально допустимая скорость ухода от столкновения: 3000");
+            }, 300)
+
+            leftPlane.pause();
+            rightPlane.pause();
+            playButton.style.cssText = `
+            display: block;
+            cursor: pointer;
+            `;
+
+            playButton.addEventListener("click", () => {
+                leftPlane.play();
+                rightPlane.play();
+                playButton.style.cssText = `
+                display: none;
+                cursor: default;
+                `;
+                playButton.removeEventListener("click");
+            
+            });
+
+            
+            if ((leftPlane.animation?.playState == "paused") && (rightPlane.animation?.playState == "paused")) {
+                resolve();
+            }
+        }, leftPlane.time / 4);
+
+
+        // setTimeout(() => {
+        //     leftPlane.pause();
+        //     rightPlane.pause();
+        //     playButton.style.cssText = `
+        //     display: block;
+        //     cursor: pointer;
+        //     `;
+
+        //     playButton.addEventListener("click", () => {
+        //         leftPlane.play();
+        //         rightPlane.play();
+        //         playButton.style.cssText = `
+        //         display: none;
+        //         cursor: default;
+        //         `;
+                
+        //     });
+        // }, leftPlane.time / 4);
+    }
+
+    
+
 
     if ((+leftHeightSetter.height * 100 >= +h1.textContent.slice(2) + +h2.textContent.slice(2)) && (+leftSpeedSetter.speed < 0) || //current > start but speed < 0
         (+leftHeightSetter.height * 100 <= +h1.textContent.slice(2) + +h2.textContent.slice(2)) && (+leftSpeedSetter.speed > 0) || //current < start but speed > 0
@@ -343,6 +410,7 @@ function decrDigit(firstDigit, secondDigit, minDigit, table, step) {
                 firstDigit.innerHTML = `<img src="assets/images/nums/${firstDigit.dataset.digit}.png" alt="digit"></img>`;
             }
             
+
         } else {
             secondDigit.setAttribute("data-digit", +secondDigit.dataset.digit - step);
             secondDigit.innerHTML = `<img src="assets/images/nums/${secondDigit.dataset.digit}.png" alt="digit"></img>`;
