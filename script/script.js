@@ -314,54 +314,38 @@ document.querySelector("#start-button").addEventListener("click", () => {
     }
 
     if (+h1.textContent.slice(2) - +h2.textContent.slice(2) == 1000) {
-        setTimeout(() => {
+        
+        if ((Math.abs(+leftSpeedSetter.speed) < 15) && (+rightSpeedSetter.speed) < 15) {
             setTimeout(() => {
-                alert("Минимально допустимая скорость ухода от столкновения: 3000");
-            }, 300)
-
-            leftPlane.pause();
-            rightPlane.pause();
-            playButton.style.cssText = `
-            display: block;
-            cursor: pointer;
-            `;
-
-            playButton.addEventListener("click", () => {
-                leftPlane.play();
-                rightPlane.play();
+                console.log("Trafic! Trafic!");
+            }, leftPlane.time / 5);
+            
+        } else {
+            setTimeout(() => {
+                setTimeout(() => {
+                    alert("Минимально допустимая скорость ухода от столкновения: 3000");
+                }, 300)
+    
+                leftPlane.pause();
+                rightPlane.pause();
                 playButton.style.cssText = `
-                display: none;
-                cursor: default;
+                display: block;
+                cursor: pointer;
                 `;
-                playButton.removeEventListener("click");
-            
-            });
-
-            
-            if ((leftPlane.animation?.playState == "paused") && (rightPlane.animation?.playState == "paused")) {
-                resolve();
-            }
-        }, leftPlane.time / 4);
-
-
-        // setTimeout(() => {
-        //     leftPlane.pause();
-        //     rightPlane.pause();
-        //     playButton.style.cssText = `
-        //     display: block;
-        //     cursor: pointer;
-        //     `;
-
-        //     playButton.addEventListener("click", () => {
-        //         leftPlane.play();
-        //         rightPlane.play();
-        //         playButton.style.cssText = `
-        //         display: none;
-        //         cursor: default;
-        //         `;
+    
+                playButton.addEventListener("click", () => {
+                    leftPlane.play();
+                    rightPlane.play();
+                    playButton.style.cssText = `
+                    display: none;
+                    cursor: default;
+                    `;
+                    playButton.removeEventListener("click");
                 
-        //     });
-        // }, leftPlane.time / 4);
+                });
+    
+            }, leftPlane.time / 4);
+        }
     }
 
     
