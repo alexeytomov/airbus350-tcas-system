@@ -299,7 +299,7 @@ document.querySelector("#start-button").addEventListener("mouseover", () => { //
     leftHeightSetter.save();
     leftSpeedSetter.save();
 
-    leftPlane.changeSettings(calculateHeightPercentLeft(leftHeightSetter.height, +h1.textContent.slice(2), +h2.textContent.slice(2) ) * 150, leftSpeedSetter.speed / 10);
+    leftPlane.changeSettings(calculateHeightPercentLeft(leftHeightSetter.height, +h1.textContent.slice(2), +h2.textContent.slice(2) ) * 145, leftSpeedSetter.speed / 10);
     
     rightPlane.changeSettings(calculateHeightPercent(rightHeightSetter.height, +h2.textContent.slice(2) ) * 135, rightSpeedSetter.speed / 10);
 });
@@ -313,69 +313,106 @@ document.querySelector("#start-button").addEventListener("click", () => {
         return;
     }
 
+    if ((+leftHeightSetter.height * 100 >= +h1.textContent.slice(2) + +h2.textContent.slice(2)) && (+leftSpeedSetter.speed < 0) || //current > start but speed < 0
+        (+leftHeightSetter.height * 100 <= +h1.textContent.slice(2) + +h2.textContent.slice(2)) && (+leftSpeedSetter.speed > 0) || //current < start but speed > 0
+        (+leftHeightSetter.height * 100 != +h1.textContent.slice(2) + +h2.textContent.slice(2)) && (+leftSpeedSetter.speed == 0)){ //current = start but speed != 0
+            throw "Error (leftPlane): Height and Speed don`t match each other";
+    }
+
+    if ((+rightSpeedSetter.speed < 0) || //start == 0 (default) but speed < 0
+        (+rightHeightSetter.height == 0) && (+rightSpeedSetter.speed > 0) || //current == start but speed > 0
+        (+rightHeightSetter.height != 0) && (+rightSpeedSetter.speed == 0)) { //current != start but speed == 0
+            throw "Error (rightPlane): Height and Speed don`t match each other";
+    }   
+
+    leftPlane.start();
+    rightPlane.start();
+
     if (+h1.textContent.slice(2) - +h2.textContent.slice(2) == 1000) {
         
-        if ((Math.abs(+leftSpeedSetter.speed) < 15) && (+rightSpeedSetter.speed) < 15) {
+        if ((Math.abs(+leftSpeedSetter.speed) <= 15) && (+rightSpeedSetter.speed) <= 15) {
             setTimeout(() => {
                 console.log("Trafic! Trafic!");
             }, leftPlane.time / 5);
             
-        } else {
+        } else if ((Math.abs(+leftSpeedSetter.speed) > 15) || (+rightSpeedSetter.speed) > 15) {
             setTimeout(() => {
                 setTimeout(() => {
                     alert("Минимально допустимая скорость ухода от столкновения: 3000");
                 }, 300)
-    
+                
+                console.log("Trafic! Trafic! Claim! Claim!")
+
                 leftPlane.pause();
                 rightPlane.pause();
                 playButton.style.cssText = `
                 display: block;
                 cursor: pointer;
                 `;
-    
-                playButton.addEventListener("click", () => {
-                    leftPlane.play();
-                    rightPlane.play();
-                    playButton.style.cssText = `
-                    display: none;
-                    cursor: default;
-                    `;
-                    playButton.removeEventListener("click");
                 
+                playButton.addEventListener("mouseover", () => {
+                    leftHeightSetter.save();
+                    leftSpeedSetter.save();
+
+                });    
+
+                playButton.addEventListener("click", () => {
+                    playManualSettings();
+                    playButton.removeEventListener("click", () => playManualSettings());
                 });
     
             }, leftPlane.time / 4);
+
         }
     }
 
-    
-
-
-    if ((+leftHeightSetter.height * 100 >= +h1.textContent.slice(2) + +h2.textContent.slice(2)) && (+leftSpeedSetter.speed < 0) || //current > start but speed < 0
-        (+leftHeightSetter.height * 100 <= +h1.textContent.slice(2) + +h2.textContent.slice(2)) && (+leftSpeedSetter.speed > 0) || //current < start but speed > 0
-        (+leftHeightSetter.height * 100 != +h1.textContent.slice(2) + +h2.textContent.slice(2)) && (+leftSpeedSetter.speed == 0)){ //current = start but speed != 0
-        throw "Error (leftPlane): Height and Speed don`t match each other";
-    }
-
-    if ((+rightSpeedSetter.speed < 0) || //start == 0 (default) but speed < 0
-        (+rightHeightSetter.height == 0) && (+rightSpeedSetter.speed > 0) || //current == start but speed > 0
-        (+rightHeightSetter.height != 0) && (+rightSpeedSetter.speed == 0)) { //current != start but speed == 0
-        throw "Error (rightPlane): Height and Speed don`t match each other";
-    }
-
-    leftPlane.start();
-    rightPlane.start();
 });
 
 
 //Кнопка Рестарт
 document.querySelector("#restart-button").addEventListener("click", () => {
     leftPlane.end();
+    leftPlane.plane.style.top = "0";
+
     rightPlane.end();
+    rightPlane.plane.style.bottom = "0";
 });
 
 
+//tcas functions
+function playManualSettings() {
+    playButton.style.cssText = `
+    display: none;
+    cursor: default;
+    `;
 
+    leftPlaneUp();
+    rightPlaneUp();
+    leftPlane.play();
+    rightPlane.play();
+}
+
+
+function leftPlaneUp() {
+    let pos = +leftPlane.plane.style.top.slice(0, -2) - 1;
+
+    leftPlane.plane.style.top = pos + "px";
+
+    if (Math.abs(pos) < 100) {
+        requestAnimationFrame(leftPlaneUp);
+    }
+}
+
+
+function rightPlaneUp() {
+    let pos = +rightPlane.plane.style.bottom.slice(0, -2) - 1;
+
+    rightPlane.plane.style.bottom = pos + "px";
+
+    if (Math.abs(pos) < 100) {
+        requestAnimationFrame(rightPlaneUp);
+    }
+}
 
 // controlSetter function (dynamic digit changes)
 
