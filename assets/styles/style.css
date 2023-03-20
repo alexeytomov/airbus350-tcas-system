@@ -297,6 +297,10 @@ table {
     cursor:pointer;
 }
 
+#restart-button{
+    display: none;
+}
+
 .logo{
     padding-left: 353px;
     
