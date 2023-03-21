@@ -196,22 +196,22 @@ h2.textContent = "FL" + 10500;
 
 //настройка уровней высоты динамическая
 
-// getDynamicInformation("#h1");
-// getDynamicInformation("#h2");
+getDynamicInformation("#h1");
+getDynamicInformation("#h2");
 
-// function getDynamicInformation(selector) {
-//     const input = document.querySelector(selector);
-//     input.addEventListener('input', () => {
-//         switch(input.getAttribute('data-height')) {
-//             case "1":
-//                 h1.textContent = "FL" + input.value;
-//                 break;
-//             case "2":
-//                 h2.textContent = "FL" + input.value;
-//                 break;
-//         }
-//     });
-// }
+function getDynamicInformation(selector) {
+    const input = document.querySelector(selector);
+    input.addEventListener('input', () => {
+        switch(input.getAttribute('data-height')) {
+            case "1":
+                h1.textContent = "FL" + input.value;
+                break;
+            case "2":
+                h2.textContent = "FL" + input.value;
+                break;
+        }
+    });
+}
 
 //Set Height levels end
 
@@ -328,7 +328,7 @@ document.querySelector("#start-button").addEventListener("click", () => {
     leftPlane.start();
     rightPlane.start();
 
-    if (+h1.textContent.slice(2) - +h2.textContent.slice(2) == 1000) {
+    if (Math.abs(leftHeightSetter.height - rightHeightSetter.height) * 100 == 1000) {
         
         if ((Math.abs(+leftSpeedSetter.speed) <= 15) && (+rightSpeedSetter.speed) <= 15) {
             setTimeout(() => {
