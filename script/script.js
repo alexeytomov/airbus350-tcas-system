@@ -2,6 +2,8 @@ const trafficPath = "../assets/sounds/traffic.mp3";
 const claimPath = "../assets/sounds/claim.mp3";
 
 
+
+
 //Plane movement start
 
 class Airbus {
@@ -136,9 +138,21 @@ class SpeedSetter {
     }
 }
 
+class Horizont {
+    constructor() {
+        this.heightSettings = document.querySelector(".horizont-height-settings");
+
+    }
+
+    reload() {
+        this.heightSettings.innerHTML = `<span>FL${leftHeightSetter.firstDigit.dataset.digit + leftHeightSetter.secondDigit.dataset.digit + leftHeightSetter.thirdDigit.dataset.digit}</span>`
+    }
+}
+
 const leftPlane = new Airbus(".left-plane");
 const rightPlane = new Airbus(".right-plane");
 
+const leftHorizont = new Horizont();
 
     //leftPlane.render(1300, 100, 2.5); // width | height | speed (0.5 long, 1 - center, 2 - start)
     //rightPlane.start(1300, 100, 2.5); //Height - высчитываем процент  высоты на пульте от настроенной высоты получеем коэф, на который умножим 150 (получим макс высоту)
@@ -335,7 +349,12 @@ document.querySelector("#start-button").addEventListener("click", () => {
     
     changeHorizontDiraction("down");
 
-    
+    //Horizont height animation
+    let horizontCurrentHeightText = document.querySelector(".horizont-height-current span");
+    let horizontSettingsHeightText = document.querySelector(".horizont-height-settings span");
+
+    changeHorizontCurrentHeightDown(horizontCurrentHeightText, horizontSettingsHeightText, leftPlane.time / 11);
+
     setTimeout(() => {
         if (flightDiraction.dataset.position == "down") {
             changeHorizontDiraction("straight");
@@ -404,6 +423,9 @@ document.querySelector("#start-button").addEventListener("click", () => {
                         }
 
                         changeHorizontDiraction("up");
+
+                        let horizontSettingsHeightText = document.querySelector(".horizont-height-settings span");//переназначаем, тк обновляется все внутри, включая span
+                        changeHorizontCurrentHeightUp(horizontCurrentHeightText, horizontSettingsHeightText, 2000);
 
                         setTimeout(() => {
                             changeHorizontDiraction("straight");
@@ -568,6 +590,7 @@ function incrDigitHeight(firstDigit, secondDigit, thirdDigit, maxDigit, table, s
         }
 
     }
+    leftHorizont.reload();
 
 }
 
@@ -616,6 +639,8 @@ function decrDigitHeight(firstDigit, secondDigit, thirdDigit, minDigit, table, s
         } else if (firstDigit.dataset.digit == "0") {
             firstDigit.innerHTML = '';
         } 
+
+        leftHorizont.reload();
     }
 }
 
@@ -642,4 +667,27 @@ function restart(){
 function changeHorizontDiraction(diraction){
     flightDiraction.setAttribute("data-position", diraction);
     flightDiraction.innerHTML = `<img src="assets/images/horizont-inside-${flightDiraction.dataset.position}.png" alt="horizont panel"></img>`
+}
+
+//currentHeightAnimation
+function changeHorizontCurrentHeightDown(currentHeight, settingsHeight, time) {
+    let totalHeight = Math.abs(+currentHeight.textContent - +settingsHeight.textContent.slice(2));
+    const timeInterval = time / totalHeight;
+    let id = setTimeout( function repeat() {
+        currentHeight.textContent = +currentHeight.textContent - 1;
+        if (+currentHeight.textContent != +settingsHeight.textContent.slice(2) ) {
+            id = setTimeout(repeat, timeInterval);
+        }      
+    }, timeInterval);
+}
+
+function changeHorizontCurrentHeightUp(currentHeight, settingsHeight, time) {
+    let totalHeight = Math.abs(+currentHeight.textContent - +settingsHeight.textContent.slice(2));
+    const timeInterval = time / totalHeight;
+    let id = setTimeout( function repeat() {
+        currentHeight.textContent = +currentHeight.textContent + 1;
+        if (+currentHeight.textContent != +settingsHeight.textContent.slice(2) ) {
+            id = setTimeout(repeat, timeInterval);
+        }      
+    }, timeInterval);
 }

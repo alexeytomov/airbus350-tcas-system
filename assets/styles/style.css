@@ -132,6 +132,22 @@ table {
     background-image: url(../images/horizont-outside.png);
 }
 
+.horizont-height-settings{
+    display: inline-block;
+    position: relative;
+    top: 130px;
+    left: 305px;
+    color: rgb(96, 189, 218);
+}
+
+.horizont-height-current{
+    display: inline-block;
+    position: relative;
+    top: 240px;
+    left: 260px;
+    color: rgb(101, 255, 109);
+}
+
 .outside-horizont{
     position: absolute;
     top: 117px;
