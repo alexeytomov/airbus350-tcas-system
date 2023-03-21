@@ -1,10 +1,13 @@
+const trafficPath = "../assets/sounds/traffic.mp3";
+const claimPath = "../assets/sounds/claim.mp3";
+
 
 //Plane movement start
 
 class Airbus {
     constructor(selector) {
         this.plane = document.querySelector(selector);
-        this.time = 18000;
+        this.time = 30000;
         this.isRight = +this.plane.dataset.number - 1; // 2: isRight = true,  1: isRight = false
         this.width = 1700;
         this.height, this.speed;//поля для динамической настройки полета
@@ -333,46 +336,75 @@ document.querySelector("#start-button").addEventListener("click", () => {
         if ((Math.abs(+leftSpeedSetter.speed) <= 15) && (+rightSpeedSetter.speed) <= 15) {
             setTimeout(() => {
                 console.log("Trafic! Trafic!");
+                playSound(trafficPath);
             }, leftPlane.time / 5);
             
         } else if ((Math.abs(+leftSpeedSetter.speed) > 15) || (+rightSpeedSetter.speed) > 15) {
             let currentLeftHeight = +leftHeightSetter.height * 100;
             let currentRightHeight = +rightHeightSetter.height * 100;
+
+
+
             setTimeout(() => {
-                setTimeout(() => {
-                    alert("Минимально допустимая скорость ухода от столкновения: 3000");
-                }, 300)
+                // setTimeout(() => {
+                    
+                // }, 300)
                 
-                console.log("Trafic! Trafic! Claim! Claim!")
+                console.log("Trafic! Trafic! Claim! Claim!");
 
-                leftPlane.pause();
-                rightPlane.pause();
-                playButton.style.cssText = `
-                display: block;
-                cursor: pointer;
-                `;
-                
-                playButton.addEventListener("mouseover", () => {
-                    leftHeightSetter.save();
-                    leftSpeedSetter.save();
-
-                });    
-
-                playButton.addEventListener("click", () => {
-                    if ((Math.abs(+rightSpeedSetter.speed) * 100 < 3000) || (+rightHeightSetter.height * 100 >= currentRightHeight)) //(+rightHeightSetter.height == 0) //current == start but speed > 0 
-                    {
-                        throw "Error (rightPlane): Speed or Height are incorrect";
-                    }   
-
-                    if ((Math.abs(+leftSpeedSetter.speed) * 100 < 3000) || (+leftHeightSetter.height * 100 <= currentLeftHeight)) {
-                        throw "Error (leftPlane): Speed or Height are incorrect";
-                    }
-
-                    playManualSettings();
-                    playButton.removeEventListener("click", () => playManualSettings());
+                const trafficPromise = new Promise( (resolve, reject) => {
+                    playSound(trafficPath);
+                    setTimeout(() => {
+                        resolve();
+                    }, 1900);
                 });
+
+                trafficPromise.then(() => {
+                    playSound(claimPath);
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            resolve();
+                        }, 1900);
+                    });
+                }).then(() => {
+                    leftPlane.pause();
+                    rightPlane.pause();
+                    playButton.style.cssText = `
+                        display: block;
+                        cursor: pointer;
+                    `;
+                    
+                    playButton.addEventListener("mouseover", () => {
+                        leftHeightSetter.save();
+                        leftSpeedSetter.save();
+
+                    });    
+
+                    playButton.addEventListener("click", () => {
+                        if ((Math.abs(+rightSpeedSetter.speed) * 100 < 3000) || (+rightHeightSetter.height * 100 >= currentRightHeight)) //(+rightHeightSetter.height == 0) //current == start but speed > 0 
+                        {
+                            throw "Error (rightPlane): Speed or Height are incorrect";
+                        }   
+
+                        if ((Math.abs(+leftSpeedSetter.speed) * 100 < 3000) || (+leftHeightSetter.height * 100 <= currentLeftHeight)) {
+                            throw "Error (leftPlane): Speed or Height are incorrect";
+                        }
+
+                        playManualSettings();
+                        playButton.removeEventListener("click", () => playManualSettings());
+                    });
+                        return new Promise((resolve, reject) => {
+                            setTimeout(() => {
+                                resolve();
+                            }, 300);
+                        });
+                }).then(() => {
+                    alert("Минимально допустимая скорость ухода от столкновения: 3000");
+                });
+                
+                
     
-            }, leftPlane.time / 4);
+            }, leftPlane.time / 7);
 
         }
     }
@@ -388,7 +420,6 @@ document.querySelector("#restart-button").addEventListener("click", () => {
     rightPlane.end();
     rightPlane.plane.style.bottom = "0";
 });
-
 
 //tcas functions
 function playManualSettings() {
@@ -424,6 +455,14 @@ function rightPlaneUp() {
         requestAnimationFrame(rightPlaneUp);
     }
 }
+
+
+//sounds
+function playSound(source) {
+    let audio = new Audio(); // Создаём новый элемент Audio
+    audio.src = source; // Указываем путь к звуку "клика"
+    audio.autoplay = true; // Автоматически запускаем
+  }
 
 // controlSetter function (dynamic digit changes)
 
