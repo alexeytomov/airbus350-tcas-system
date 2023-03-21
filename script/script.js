@@ -336,6 +336,8 @@ document.querySelector("#start-button").addEventListener("click", () => {
             }, leftPlane.time / 5);
             
         } else if ((Math.abs(+leftSpeedSetter.speed) > 15) || (+rightSpeedSetter.speed) > 15) {
+            let currentLeftHeight = +leftHeightSetter.height * 100;
+            let currentRightHeight = +rightHeightSetter.height * 100;
             setTimeout(() => {
                 setTimeout(() => {
                     alert("Минимально допустимая скорость ухода от столкновения: 3000");
@@ -357,6 +359,15 @@ document.querySelector("#start-button").addEventListener("click", () => {
                 });    
 
                 playButton.addEventListener("click", () => {
+                    if ((Math.abs(+rightSpeedSetter.speed) * 100 < 3000) || (+rightHeightSetter.height * 100 >= currentRightHeight)) //(+rightHeightSetter.height == 0) //current == start but speed > 0 
+                    {
+                        throw "Error (rightPlane): Speed or Height are incorrect";
+                    }   
+
+                    if ((Math.abs(+leftSpeedSetter.speed) * 100 < 3000) || (+leftHeightSetter.height * 100 <= currentLeftHeight)) {
+                        throw "Error (leftPlane): Speed or Height are incorrect";
+                    }
+
                     playManualSettings();
                     playButton.removeEventListener("click", () => playManualSettings());
                 });
