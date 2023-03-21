@@ -125,12 +125,24 @@ table {
 }
 
 .horizont {
+    position: relative;
     display: inline-block;
     width: 426px;
     height:100%;
     background-image: url(../images/horizont-outside.png);
 }
 
+.outside-horizont{
+    position: absolute;
+    top: 117px;
+    left: 90px;
+}
+
+.tcas-panel{
+    position: absolute;
+    top: 60px;
+    right: 90px;
+}
 /* Height and speed setting start */
 
 .height-controler {
@@ -297,9 +309,9 @@ table {
     cursor:pointer;
 }
 
-#restart-button{
+/* #restart-button{
     display: none;
-}
+} */
 
 .logo{
     padding-left: 353px;

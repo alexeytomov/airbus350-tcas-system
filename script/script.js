@@ -146,6 +146,8 @@ const rightPlane = new Airbus(".right-plane");
     // инициализировать кнопку restart
 // });
 
+const flightDiraction = document.querySelector(".outside-horizont");
+const horizontMode = document.querySelector(".tcas-panel");
 
 function createKeyframes(maxWidth, maxHeight, speed, isRight) {
     let frames = [];
@@ -164,7 +166,7 @@ function createKeyframes(maxWidth, maxHeight, speed, isRight) {
         currentWidth += 15;
         currentHeight = Math.floor(Math.sqrt(70*currentWidth * Math.abs(speed)));
     
-        if (currentHeight > maxHeight) {
+        if (currentHeight > maxHeight)  {
             currentHeight = maxHeight;
         }
 
@@ -330,6 +332,15 @@ document.querySelector("#start-button").addEventListener("click", () => {
 
     leftPlane.start();
     rightPlane.start();
+    
+    changeHorizontDiraction("down");
+
+    
+    setTimeout(() => {
+        if (flightDiraction.dataset.position == "down") {
+            changeHorizontDiraction("straight");
+        }
+    }, leftPlane.time / 11); //выравнивание горизонта
 
     if (Math.abs(leftHeightSetter.height - rightHeightSetter.height) * 100 == 1000) {
         
@@ -337,6 +348,9 @@ document.querySelector("#start-button").addEventListener("click", () => {
             setTimeout(() => {
                 console.log("Trafic! Trafic!");
                 playSound(trafficPath);
+
+                horizontMode.setAttribute("data-mode", "alt-tcas");
+                horizontMode.innerHTML = `<img src="assets/images/${horizontMode.dataset.mode}.png" alt="tcas mode">`
             }, leftPlane.time / 5);
             
         } else if ((Math.abs(+leftSpeedSetter.speed) > 15) || (+rightSpeedSetter.speed) > 15) {
@@ -344,12 +358,10 @@ document.querySelector("#start-button").addEventListener("click", () => {
             let currentRightHeight = +rightHeightSetter.height * 100;
 
 
-
             setTimeout(() => {
                 // setTimeout(() => {
                     
                 // }, 300)
-                
                 console.log("Trafic! Trafic! Claim! Claim!");
 
                 const trafficPromise = new Promise( (resolve, reject) => {
@@ -376,8 +388,9 @@ document.querySelector("#start-button").addEventListener("click", () => {
                     
                     playButton.addEventListener("mouseover", () => {
                         leftHeightSetter.save();
-                        leftSpeedSetter.save();
-
+                        leftSpeedSetter.save();    
+                        rightHeightSetter.save();
+                        rightSpeedSetter.save();
                     });    
 
                     playButton.addEventListener("click", () => {
@@ -389,6 +402,12 @@ document.querySelector("#start-button").addEventListener("click", () => {
                         if ((+leftSpeedSetter.speed * 100 < 3000) || (+leftHeightSetter.height * 100 <= currentLeftHeight)) {
                             throw "Error (leftPlane): Speed or Height are incorrect";
                         }
+
+                        changeHorizontDiraction("up");
+
+                        setTimeout(() => {
+                            changeHorizontDiraction("straight");
+                        }, 2000);
 
                         playManualSettings();
                         playButton.removeEventListener("click", () => playManualSettings());
@@ -611,4 +630,16 @@ function createZeroes(table) {
     for (let i = 1; i < table.length - 1; i++){
         table[i].innerHTML = `<img src="assets/images/nums/${table[i].dataset.digit}.png" alt="digit"></img>`;
     }
+}
+
+
+//restart
+function restart(){
+    window.location.reload();
+} 
+
+//reload horizont
+function changeHorizontDiraction(diraction){
+    flightDiraction.setAttribute("data-position", diraction);
+    flightDiraction.innerHTML = `<img src="assets/images/horizont-inside-${flightDiraction.dataset.position}.png" alt="horizont panel"></img>`
 }

@@ -25,8 +25,11 @@
         <!-- Control start -->
         <div class="control">
             <div class="horizont">
-                <div class="outside-horizont">
-                    <!-- <img src="assets/images/horizont-outside.png" alt="horizont panel"> -->
+                <div class="outside-horizont" data-position="straight">
+                    <img src="assets/images/horizont-inside-straight.png" alt="horizont panel">
+                </div>
+                <div class="tcas-panel" data-mode="alt">
+                    <img src="assets/images/alt.png" alt="tcas mode">
                 </div>
             </div>
             <div class="height-controler">
@@ -141,7 +144,7 @@
 
                 <div class="start-buttons-wrapper">
                     <button class="start-button" id="start-button">START</button>
-                    <button class="start-button" id="restart-button">RESTART</button>
+                    <button class="start-button" id="restart-button" type="submit" onClick="restart()">RESTART</button>
                 </div>
 
 
