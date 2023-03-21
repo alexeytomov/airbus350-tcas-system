@@ -381,12 +381,12 @@ document.querySelector("#start-button").addEventListener("click", () => {
                     });    
 
                     playButton.addEventListener("click", () => {
-                        if ((Math.abs(+rightSpeedSetter.speed) * 100 < 3000) || (+rightHeightSetter.height * 100 >= currentRightHeight)) //(+rightHeightSetter.height == 0) //current == start but speed > 0 
+                        if ((+rightSpeedSetter.speed * 100 > -3000) || (+rightHeightSetter.height * 100 >= currentRightHeight)) //(+rightHeightSetter.height == 0) //current == start but speed > 0 
                         {
                             throw "Error (rightPlane): Speed or Height are incorrect";
                         }   
 
-                        if ((Math.abs(+leftSpeedSetter.speed) * 100 < 3000) || (+leftHeightSetter.height * 100 <= currentLeftHeight)) {
+                        if ((+leftSpeedSetter.speed * 100 < 3000) || (+leftHeightSetter.height * 100 <= currentLeftHeight)) {
                             throw "Error (leftPlane): Speed or Height are incorrect";
                         }
 
