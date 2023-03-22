@@ -154,6 +154,20 @@ table {
     left: 90px;
 }
 
+.horizont-speed-settings{
+    position: relative;
+    font-size: 15px;
+    top: 125px;
+    left: 378px;
+    color: rgb(101, 255, 109);
+}
+
+#up-speed{
+    margin-bottom: 185px;
+}
+
+
+
 .tcas-panel{
     position: absolute;
     top: 60px;

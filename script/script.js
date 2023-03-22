@@ -141,11 +141,17 @@ class SpeedSetter {
 class Horizont {
     constructor() {
         this.heightSettings = document.querySelector(".horizont-height-settings");
+        this.speedSettings = document.querySelector(".horizont-speed-settings");
 
     }
 
-    reload() {
+    reloadHeight() {
         this.heightSettings.innerHTML = `<span>FL${leftHeightSetter.firstDigit.dataset.digit + leftHeightSetter.secondDigit.dataset.digit + leftHeightSetter.thirdDigit.dataset.digit}</span>`
+    }
+
+    reloadSpeed(){
+        this.speedSettings.querySelector("#up-speed").textContent = `\u00A0${leftSpeedSetter.firstDigit.dataset.digit + leftSpeedSetter.secondDigit.dataset.digit}`; 
+        this.speedSettings.querySelector("#down-speed").textContent = `-${leftSpeedSetter.firstDigit.dataset.digit + leftSpeedSetter.secondDigit.dataset.digit}`; 
     }
 }
 
@@ -531,6 +537,8 @@ function decrDigit(firstDigit, secondDigit, minDigit, table, step) {
         if ((firstDigit.dataset.digit == "0") && (secondDigit.dataset.digit == "0")) {
             deleteZeroes(table);
         }
+
+        leftHorizont.reloadSpeed();
     }
 }
 
@@ -554,6 +562,7 @@ function incrDigit(firstDigit, secondDigit, maxDigit, table, step) {
             secondDigit.innerHTML = `<img src="assets/images/nums/${secondDigit.dataset.digit}.png" alt="digit"></img>`;
         }
     }
+    leftHorizont.reloadSpeed();
 
 }
 
@@ -590,7 +599,7 @@ function incrDigitHeight(firstDigit, secondDigit, thirdDigit, maxDigit, table, s
         }
 
     }
-    leftHorizont.reload();
+    leftHorizont.reloadHeight();
 
 }
 
@@ -640,7 +649,7 @@ function decrDigitHeight(firstDigit, secondDigit, thirdDigit, minDigit, table, s
             firstDigit.innerHTML = '';
         } 
 
-        leftHorizont.reload();
+        leftHorizont.reloadHeight();
     }
 }
 
