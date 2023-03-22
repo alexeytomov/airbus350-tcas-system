@@ -173,6 +173,7 @@ table {
 
 
 #line-up{
+    z-index: 100;
     position: absolute;
     display: none;
     left: 10px;
@@ -180,22 +181,56 @@ table {
 }
 
 #line-center{
+    z-index: 100;
     position: absolute;
     top: 13px;
     display: block;
 }
 
 #line-down{
+    z-index: 100;
     position: absolute;
     display: none;
     left: 10px;
     top: 53px;
 }
 
+#line-tcas{
+    z-index: 1;
+    display: none;
+    position: absolute;
+    left: 11px;
+    top: -76px;
+}
+
 .tcas-panel{
     position: absolute;
     top:58px;
     right: 90px;
+}
+
+#alt {
+    display: block;
+}
+
+#alt-tcas {
+    display: none;
+}
+
+#tcas-start {
+    display: none;
+}
+
+#tcas {
+    display: none;
+}
+
+#tcas-speed {
+    display: none;
+}
+
+#tcas-speed-alt {
+    display: none;
 }
 /* Height and speed setting start */
 

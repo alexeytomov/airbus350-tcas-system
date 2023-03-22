@@ -1,9 +1,11 @@
 const trafficPath = "../assets/sounds/traffic.mp3";
 const claimPath = "../assets/sounds/claim.mp3";
+const clearPath = "../assets/sounds/no-conflict.mp3";
 
-const horizontSpeedLineUp = document.querySelector("#line-up");
-const horizontSpeedLineCenter = document.querySelector("#line-center");
-const horizontSpeedLineDown = document.querySelector("#line-down");
+// const horizontSpeedLineUp = document.querySelector("#line-up");
+// const horizontSpeedLineCenter = document.querySelector("#line-center");
+// const horizontSpeedLineDown = document.querySelector("#line-down");
+const horizontTcasLineRed = document.querySelector("#line-tcas");
 
 
 //Plane movement start
@@ -144,6 +146,20 @@ class Horizont {
     constructor() {
         this.heightSettings = document.querySelector(".horizont-height-settings");
         this.speedSettings = document.querySelector(".horizont-speed-settings");
+        this.speedLines = {
+            up: document.querySelector("#line-up"),
+            center: document.querySelector("#line-center"),
+            down: document.querySelector("#line-down")
+        };
+
+        this.tcasMessage = {
+            "alt": document.querySelector("#alt"),
+            "alt-tcas" : document.querySelector("#alt-tcas"),
+            "tcas-start" : document.querySelector("#tcas-start"),
+            "tcas" : document.querySelector("#tcas"),
+            "tcas-speed" : document.querySelector("#tcas-speed"),
+            "tcas-speed-alt" : document.querySelector("#tcas-speed-alt")
+        }
 
     }
 
@@ -154,6 +170,26 @@ class Horizont {
     reloadSpeed(){
         this.speedSettings.querySelector("#up-speed").textContent = `\u00A0${leftSpeedSetter.firstDigit.dataset.digit + leftSpeedSetter.secondDigit.dataset.digit}`; 
         this.speedSettings.querySelector("#down-speed").textContent = `-${leftSpeedSetter.firstDigit.dataset.digit + leftSpeedSetter.secondDigit.dataset.digit}`; 
+    }
+
+    changeSpeedLine(diraction) {
+        for (let key in this.speedLines) {
+            if (key == diraction) {
+                this.speedLines[key].style.display = "block";
+            } else {
+                this.speedLines[key].style.display = "none";
+            }
+        }
+    }
+
+    changeTcasMessage(message) {
+        for (let key in this.tcasMessage) {
+            if (key == message) {
+                this.tcasMessage[key].style.display = "block";
+            } else {
+                this.tcasMessage[key].style.display = "none";
+            }
+        }
     }
 }
 
@@ -356,7 +392,7 @@ document.querySelector("#start-button").addEventListener("click", () => {
     rightPlane.start();
     
     changeHorizontDiraction("down");
-    changeHorizontSpeedLine(horizontSpeedLineDown, horizontSpeedLineCenter);
+    leftHorizont.changeSpeedLine("down");
 
 
     //Horizont height animation
@@ -368,26 +404,26 @@ document.querySelector("#start-button").addEventListener("click", () => {
     setTimeout(() => {
         if (flightDiraction.dataset.position == "down") {
             changeHorizontDiraction("straight");
-            changeHorizontSpeedLine(horizontSpeedLineCenter, horizontSpeedLineDown);
+            leftHorizont.changeSpeedLine("center");
         }
     }, leftPlane.time / 11); //выравнивание горизонта
+
+
 
     if (Math.abs(leftHeightSetter.height - rightHeightSetter.height) * 100 == 1000) {
         
         if ((Math.abs(+leftSpeedSetter.speed) <= 15) && (+rightSpeedSetter.speed) <= 15) {
             setTimeout(() => {
-                console.log("Trafic! Trafic!");
+                leftHorizont.changeTcasMessage("alt-tcas");
                 playSound(trafficPath);
 
-                horizontMode.setAttribute("data-mode", "alt-tcas");
-                horizontMode.innerHTML = `<img src="assets/images/${horizontMode.dataset.mode}.png" alt="tcas mode">`
             }, leftPlane.time / 5);
             
         } else if ((Math.abs(+leftSpeedSetter.speed) > 15) || (+rightSpeedSetter.speed) > 15) {
             let currentLeftHeight = +leftHeightSetter.height * 100;
             let currentRightHeight = +rightHeightSetter.height * 100;
 
-
+            
             setTimeout(() => {
                 // setTimeout(() => {
                     
@@ -396,13 +432,16 @@ document.querySelector("#start-button").addEventListener("click", () => {
 
                 const trafficPromise = new Promise( (resolve, reject) => {
                     playSound(trafficPath);
+                    leftHorizont.changeTcasMessage("alt-tcas");
                     setTimeout(() => {
                         resolve();
-                    }, 1900);
+                    }, 2900);
                 });
 
                 trafficPromise.then(() => {
                     playSound(claimPath);
+                    leftHorizont.changeTcasMessage("tcas-start");
+                    horizontTcasLineRed.style.display = "block";
                     return new Promise((resolve, reject) => {
                         setTimeout(() => {
                             resolve();
@@ -411,6 +450,8 @@ document.querySelector("#start-button").addEventListener("click", () => {
                 }).then(() => {
                     leftPlane.pause();
                     rightPlane.pause();
+                    leftHorizont.changeTcasMessage("tcas");
+
                     playButton.style.cssText = `
                         display: block;
                         cursor: pointer;
@@ -434,18 +475,44 @@ document.querySelector("#start-button").addEventListener("click", () => {
                         }
 
                         changeHorizontDiraction("up");
-                        changeHorizontSpeedLine(horizontSpeedLineUp, horizontSpeedLineCenter);
+                        leftHorizont.changeSpeedLine("up");
 
                         let horizontSettingsHeightText = document.querySelector(".horizont-height-settings span");//переназначаем, тк обновляется все внутри, включая span
                         changeHorizontCurrentHeightUp(horizontCurrentHeightText, horizontSettingsHeightText, 2000);
 
                         setTimeout(() => {
                             changeHorizontDiraction("straight");
-                            changeHorizontSpeedLine(horizontSpeedLineCenter, horizontSpeedLineUp);
+                            leftHorizont.changeSpeedLine("center");
                         }, 2000);
 
                         playManualSettings();
+                        horizontTcasLineRed.style.display = "none"; //выключить красную полосу
                         playButton.removeEventListener("click", () => playManualSettings());
+
+                        let fork = new Promise((resolve, reject) => {
+                            setTimeout(() => {
+                                resolve();
+                            }, 1800);
+                        });
+
+                        fork.then(() => {
+                            leftHorizont.changeTcasMessage("tcas-speed");
+                            playSound(clearPath);
+                            return new Promise( (resolve, reject) => {
+                                setTimeout(() => {
+                                    resolve();
+                                }, 1000);
+                            });
+                        }).then(() => {
+                            leftHorizont.changeTcasMessage("tcas-speed-alt");
+                            return new Promise( (resolve, reject) => {
+                                setTimeout(() => {
+                                    resolve();
+                                }, 1000);
+                            });
+                        }).then(() => {
+                            leftHorizont.changeTcasMessage("alt");
+                        });
                     });
                         return new Promise((resolve, reject) => {
                             setTimeout(() => {
@@ -453,12 +520,12 @@ document.querySelector("#start-button").addEventListener("click", () => {
                             }, 300);
                         });
                 }).then(() => {
-                    alert("Минимально допустимая скорость ухода от столкновения: 3000");
+                    alert("Минимально допустимая вертикальная скорость для ухода от столкновения: 3000");
                 });
                 
                 
     
-            }, leftPlane.time / 7);
+            }, leftPlane.time / 9);
 
         }
     }
@@ -708,8 +775,7 @@ function changeHorizontCurrentHeightUp(currentHeight, settingsHeight, time) {
     }, timeInterval);
 }
 
-//changeHorizontSpeedLine
-function changeHorizontSpeedLine(newLine, oldLine) {
-    oldLine.style.display = "none";
-    newLine.style.display = "block";
+//change tcas horizont message
+function changeHorizontTcas(key) {
+
 }
