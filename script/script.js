@@ -1,7 +1,9 @@
 const trafficPath = "../assets/sounds/traffic.mp3";
 const claimPath = "../assets/sounds/claim.mp3";
 
-
+const horizontSpeedLineUp = document.querySelector("#line-up");
+const horizontSpeedLineCenter = document.querySelector("#line-center");
+const horizontSpeedLineDown = document.querySelector("#line-down");
 
 
 //Plane movement start
@@ -354,6 +356,8 @@ document.querySelector("#start-button").addEventListener("click", () => {
     rightPlane.start();
     
     changeHorizontDiraction("down");
+    changeHorizontSpeedLine(horizontSpeedLineDown, horizontSpeedLineCenter);
+
 
     //Horizont height animation
     let horizontCurrentHeightText = document.querySelector(".horizont-height-current span");
@@ -364,6 +368,7 @@ document.querySelector("#start-button").addEventListener("click", () => {
     setTimeout(() => {
         if (flightDiraction.dataset.position == "down") {
             changeHorizontDiraction("straight");
+            changeHorizontSpeedLine(horizontSpeedLineCenter, horizontSpeedLineDown);
         }
     }, leftPlane.time / 11); //выравнивание горизонта
 
@@ -429,12 +434,14 @@ document.querySelector("#start-button").addEventListener("click", () => {
                         }
 
                         changeHorizontDiraction("up");
+                        changeHorizontSpeedLine(horizontSpeedLineUp, horizontSpeedLineCenter);
 
                         let horizontSettingsHeightText = document.querySelector(".horizont-height-settings span");//переназначаем, тк обновляется все внутри, включая span
                         changeHorizontCurrentHeightUp(horizontCurrentHeightText, horizontSettingsHeightText, 2000);
 
                         setTimeout(() => {
                             changeHorizontDiraction("straight");
+                            changeHorizontSpeedLine(horizontSpeedLineCenter, horizontSpeedLineUp);
                         }, 2000);
 
                         playManualSettings();
@@ -699,4 +706,10 @@ function changeHorizontCurrentHeightUp(currentHeight, settingsHeight, time) {
             id = setTimeout(repeat, timeInterval);
         }      
     }, timeInterval);
+}
+
+//changeHorizontSpeedLine
+function changeHorizontSpeedLine(newLine, oldLine) {
+    oldLine.style.display = "none";
+    newLine.style.display = "block";
 }

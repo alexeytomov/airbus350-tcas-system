@@ -166,11 +166,35 @@ table {
     margin-bottom: 185px;
 }
 
+.horizont-speed-lines{
+    position: relative;
+    left: 370px;
+}
 
+
+#line-up{
+    position: absolute;
+    display: none;
+    left: 10px;
+    top: -77px;
+}
+
+#line-center{
+    position: absolute;
+    top: 13px;
+    display: block;
+}
+
+#line-down{
+    position: absolute;
+    display: none;
+    left: 10px;
+    top: 53px;
+}
 
 .tcas-panel{
     position: absolute;
-    top: 60px;
+    top:58px;
     right: 90px;
 }
 /* Height and speed setting start */
