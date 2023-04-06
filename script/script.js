@@ -205,10 +205,10 @@ class Monitor {
         this.markerText = document.querySelector(".marker-text");
         this.speed = document.querySelector(".horizont-speed-settings");
         this.markerShape = {
-            diamondNF: document.querySelector("#diamondNF"),
-            diamond: document.querySelector("#diamond"),
-            circle: document.querySelector("#circle"),
-            square: document.querySelector("#square")
+            "diamondNF": document.querySelector("#diamondNF"),
+            "diamond": document.querySelector("#diamond"),
+            "circle": document.querySelector("#circle"),
+            "square": document.querySelector("#square")
         };
     }
 
@@ -229,24 +229,60 @@ class Monitor {
             leftMonitorMarker.style.top = +leftMonitorMarker.style.top.slice(0, -2) + stepHeight + "px";
             leftMonitorMarker.style.right = +leftMonitorMarker.style.right.slice(0, -2) + stepRight + "px";
 
+            if (+leftMonitorMarker.style.top.slice(0, -2) > 380) {
+                leftMonitorMarker.style.display = "none"
+            }
+
             if ((+leftMonitorMarker.style.top.slice(0, -2) < HEIGHT_END) || (+leftMonitorMarker.style.right.slice(0, -2) < RIGHT_END)) {
                 id = setTimeout(repeat, 1000);
             }      
         }, 1000);
     }
 
-    reloadNumber(number) {
-        this.markerText.innerHTML = `<span>${number}</span>`;
+    reloadNumber(number, color="white", arrow = "none") {
+        let text = `${number}`;
+        this.markerText.style.color = color;
+        
+        
+        if (arrow == "up") {
+            this.markerText.innerHTML = `<span>${text}&#8593</span>`;
+        } else if (arrow == "down") {
+            this.markerText.innerHTML = `<span>${text}&#8595</span>`;
+        } else {
+            this.markerText.innerHTML = `<span>${text}</span>`;
+        }
+
+        
     }
 
     changeMarkerShape(shape) {
         for (let key in this.markerShape) {
             if (key == shape) {
-                this.tcasMessage[key].style.display = "block";
+                this.markerShape[key].style.display = "block";
             } else {
-                this.tcasMessage[key].style.display = "none";
+                this.markerShape[key].style.display = "none";
             }
         }
+    }
+
+    startSpeedChanging(time) {
+        const speedTable = document.querySelectorAll(".monitor-speed-item");
+        let counter = Math.ceil(time / 500);
+        let randomDigit;
+        let id = setTimeout( function repeat() {
+            randomDigit = getRandomInt();
+            speedTable.forEach((element) => {
+                element.textContent = +element.textContent + randomDigit;
+            });
+
+            counter--;
+
+            if (counter) {
+                id = setTimeout(repeat, 500);
+            }      
+        }, 500);
+
+
     }
 
     // reloadSpeed(){
@@ -472,8 +508,10 @@ document.querySelector("#start-button").addEventListener("click", () => {
 
     changeHorizontCurrentHeightDown(horizontCurrentHeightText, horizontSettingsHeightText, TIME_FLIGHT_UP);
 
-    //Monitor marker animation
-    leftMonitor.animateMarker(TIME_FLIGHT_UP, 300, 190);
+    setTimeout(() => {
+        leftMonitor.changeMarkerShape("diamond");
+        leftMonitor.reloadNumber(-12);
+    }, leftPlane.time / 15);
 
     setTimeout(() => {
         if (flightDiraction.dataset.position == "down") {
@@ -487,15 +525,25 @@ document.querySelector("#start-button").addEventListener("click", () => {
     if (Math.abs(leftHeightSetter.height - rightHeightSetter.height) * 100 == 1000) {
         
         if ((Math.abs(+leftSpeedSetter.speed) <= 15) && (+rightSpeedSetter.speed) <= 15) {
+
+            leftMonitor.animateMarker(TIME_FLIGHT_UP + 5000, 400, 220);
+            leftMonitor.startSpeedChanging(25000);
+
             setTimeout(() => {
                 leftHorizont.changeTcasMessage("alt-tcas");
                 playSound(trafficPath);
+                leftMonitor.changeMarkerShape("circle");
+                leftMonitor.reloadNumber(-11, "orange", "up");
 
             }, leftPlane.time / 5);
             
         } else if ((Math.abs(+leftSpeedSetter.speed) > 15) || (+rightSpeedSetter.speed) > 15) {
             let currentLeftHeight = +leftHeightSetter.height * 100;
             let currentRightHeight = +rightHeightSetter.height * 100;
+
+            //Monitor marker animation
+            leftMonitor.animateMarker(TIME_FLIGHT_UP, 300, 190);
+            leftMonitor.startSpeedChanging(TIME_FLIGHT_UP);
 
             
             setTimeout(() => {
@@ -507,6 +555,8 @@ document.querySelector("#start-button").addEventListener("click", () => {
                 const trafficPromise = new Promise( (resolve, reject) => {
                     playSound(trafficPath);
                     leftHorizont.changeTcasMessage("alt-tcas");
+                    leftMonitor.changeMarkerShape("circle");
+                    leftMonitor.reloadNumber(-11, "orange", "up");
                     setTimeout(() => {
                         resolve();
                     }, 2900);
@@ -516,6 +566,11 @@ document.querySelector("#start-button").addEventListener("click", () => {
                     playSound(claimPath);
                     leftHorizont.changeTcasMessage("tcas-start");
                     horizontTcasLineRed.style.display = "block";
+
+                    //marker RED
+                    leftMonitor.changeMarkerShape("square");
+                    leftMonitor.reloadNumber(-10, "red", "up");
+
                     return new Promise((resolve, reject) => {
                         setTimeout(() => {
                             resolve();
@@ -554,11 +609,13 @@ document.querySelector("#start-button").addEventListener("click", () => {
                         let horizontSettingsHeightText = document.querySelector(".horizont-height-settings span");//переназначаем, тк обновляется все внутри, включая span
                         changeHorizontCurrentHeightUp(horizontCurrentHeightText, horizontSettingsHeightText, 2000);
 
-                        leftMonitor.animateMarker(TIME_FLIGHT_UP, 400, 220);
+                        leftMonitor.animateMarker(TIME_FLIGHT_UP, 385, 220);
 
                         setTimeout(() => {
                             changeHorizontDiraction("straight");
                             leftHorizont.changeSpeedLine("center");
+
+                            leftMonitor.reloadNumber(-13, "red", "down");
                         }, 2000);
 
                         playManualSettings();
@@ -851,4 +908,7 @@ function changeHorizontCurrentHeightUp(currentHeight, settingsHeight, time) {
     }, timeInterval);
 }
 
-//change tcas horizont message
+//random [-3: 3]
+function getRandomInt() {
+    return Math.floor(Math.random() * 3) - 1;
+}

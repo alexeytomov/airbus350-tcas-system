@@ -322,6 +322,17 @@ table {
     position: relative;
 }
 
+.monitor-speed{
+    left: 29px;
+    bottom: 23px;
+    position: absolute;
+    width: 344px;
+    height: 20px;
+    color: rgb(101, 255, 109);
+    display: flex;
+    justify-content: space-between;
+}
+
 .monitor-marker{
     position: absolute;
     display: inline-block;
@@ -329,16 +340,19 @@ table {
     right: 160px; */
     width: 15px;
     height: 30px;
-    background-color: blue;
 }
 
 .marker-text{
     font-size: 15px;
-    color: white;
+    font-weight: bold;
+}
+
+#diamondNF{
+    display: block;
 }
 
 #diamond{
-    display: block;
+    display: none;
 }
 
 #circle{
