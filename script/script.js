@@ -176,6 +176,12 @@ class Horizont {
         for (let key in this.speedLines) {
             if (key == diraction) {
                 this.speedLines[key].style.display = "block";
+
+                if (key == "center") {
+                    this.speedSettings.style.display= "none";
+                } else {
+                    this.speedSettings.style.display= "block";
+                }
             } else {
                 this.speedLines[key].style.display = "none";
             }
@@ -222,7 +228,10 @@ function createKeyframes(maxWidth, maxHeight, speed, isRight) {
     
     while ((currentWidth < maxWidth)) {
         currentWidth += 15;
-        currentHeight = Math.floor(Math.sqrt(70*currentWidth * Math.abs(speed)));
+        currentHeight = Math.floor(Math.sqrt(40*currentWidth));
+
+        //выключил привязку к настроенным параметрам скорости
+        //currentHeight = Math.floor(Math.sqrt(70*currentWidth * Math.abs(speed)));
     
         if (currentHeight > maxHeight)  {
             currentHeight = maxHeight;
@@ -394,19 +403,20 @@ document.querySelector("#start-button").addEventListener("click", () => {
     changeHorizontDiraction("down");
     leftHorizont.changeSpeedLine("down");
 
+    const TIME_FLIGHT_UP = leftPlane.time / 4;
 
     //Horizont height animation
     let horizontCurrentHeightText = document.querySelector(".horizont-height-current span");
     let horizontSettingsHeightText = document.querySelector(".horizont-height-settings span");
 
-    changeHorizontCurrentHeightDown(horizontCurrentHeightText, horizontSettingsHeightText, leftPlane.time / 11);
+    changeHorizontCurrentHeightDown(horizontCurrentHeightText, horizontSettingsHeightText, TIME_FLIGHT_UP);
 
     setTimeout(() => {
         if (flightDiraction.dataset.position == "down") {
             changeHorizontDiraction("straight");
             leftHorizont.changeSpeedLine("center");
         }
-    }, leftPlane.time / 11); //выравнивание горизонта
+    }, TIME_FLIGHT_UP); //выравнивание горизонта
 
 
 
