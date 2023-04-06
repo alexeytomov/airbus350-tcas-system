@@ -201,60 +201,64 @@ class Horizont {
 
 class Monitor {
     constructor() {
-        this.marker = document.querySelector(".horizont-height-settings");
+        this.marker = document.querySelector(".monitor-marker");
+        this.markerText = document.querySelector(".marker-text");
         this.speed = document.querySelector(".horizont-speed-settings");
         this.markerShape = {
-            diamond: document.querySelector(""),
-            circle: document.querySelector("#line-center"),
-            square: document.querySelector("#line-down")
+            diamondNF: document.querySelector("#diamondNF"),
+            diamond: document.querySelector("#diamond"),
+            circle: document.querySelector("#circle"),
+            square: document.querySelector("#square")
         };
-
-        this.tcasMessage = {
-            "alt": document.querySelector("#alt"),
-            "alt-tcas" : document.querySelector("#alt-tcas"),
-            "tcas-start" : document.querySelector("#tcas-start"),
-            "tcas" : document.querySelector("#tcas"),
-            "tcas-speed" : document.querySelector("#tcas-speed"),
-            "tcas-speed-alt" : document.querySelector("#tcas-speed-alt")
-        }
-
     }
 
-    reloadHeight() {
-        this.heightSettings.innerHTML = `<span>FL${leftHeightSetter.firstDigit.dataset.digit + leftHeightSetter.secondDigit.dataset.digit + leftHeightSetter.thirdDigit.dataset.digit}</span>`
+    animateMarker(time, HEIGHT_END, RIGHT_END) {
+        // const HEIGHT_END = 300,
+        //       RIGHT_END = 190;
+
+
+        let totalHeight = Math.abs(+this.marker.style.top.slice(0, -2) - HEIGHT_END);
+        let totalRight = Math.abs(+this.marker.style.right.slice(0, -2) - RIGHT_END);
+        const stepHeight = Math.ceil(totalHeight * 1000 / time);
+        const stepRight = Math.ceil(totalRight * 1000/ time);
+
+        let currentHeight = +(this.marker.style.top.slice(0, -2));
+        let id = setTimeout( function repeat() {
+            const leftMonitorMarker = document.querySelector(".monitor-marker")
+            //hard-code for left planne ONLY
+            leftMonitorMarker.style.top = +leftMonitorMarker.style.top.slice(0, -2) + stepHeight + "px";
+            leftMonitorMarker.style.right = +leftMonitorMarker.style.right.slice(0, -2) + stepRight + "px";
+
+            if ((+leftMonitorMarker.style.top.slice(0, -2) < HEIGHT_END) || (+leftMonitorMarker.style.right.slice(0, -2) < RIGHT_END)) {
+                id = setTimeout(repeat, 1000);
+            }      
+        }, 1000);
     }
 
-    reloadSpeed(){
-        this.speedSettings.querySelector("#up-speed").textContent = `\u00A0${leftSpeedSetter.firstDigit.dataset.digit + leftSpeedSetter.secondDigit.dataset.digit}`; 
-        this.speedSettings.querySelector("#down-speed").textContent = `-${leftSpeedSetter.firstDigit.dataset.digit + leftSpeedSetter.secondDigit.dataset.digit}`; 
+    reloadNumber(number) {
+        this.markerText.innerHTML = `<span>${number}</span>`;
     }
 
-    changeSpeedLine(diraction) {
-        for (let key in this.speedLines) {
-            if (key == diraction) {
-                this.speedLines[key].style.display = "block";
-
-                if (key == "center") {
-                    this.speedSettings.style.display= "none";
-                } else {
-                    this.speedSettings.style.display= "block";
-                }
-            } else {
-                this.speedLines[key].style.display = "none";
-            }
-        }
-    }
-
-    changeTcasMessage(message) {
-        for (let key in this.tcasMessage) {
-            if (key == message) {
+    changeMarkerShape(shape) {
+        for (let key in this.markerShape) {
+            if (key == shape) {
                 this.tcasMessage[key].style.display = "block";
             } else {
                 this.tcasMessage[key].style.display = "none";
             }
         }
     }
+
+    // reloadSpeed(){
+    //     this.speedSettings.querySelector("#up-speed").textContent = `\u00A0${leftSpeedSetter.firstDigit.dataset.digit + leftSpeedSetter.secondDigit.dataset.digit}`; 
+    //     this.speedSettings.querySelector("#down-speed").textContent = `-${leftSpeedSetter.firstDigit.dataset.digit + leftSpeedSetter.secondDigit.dataset.digit}`; 
+    // }
+
+
 }
+
+
+const leftMonitor = new Monitor();
 
 const leftPlane = new Airbus(".left-plane");
 const rightPlane = new Airbus(".right-plane");
@@ -468,6 +472,9 @@ document.querySelector("#start-button").addEventListener("click", () => {
 
     changeHorizontCurrentHeightDown(horizontCurrentHeightText, horizontSettingsHeightText, TIME_FLIGHT_UP);
 
+    //Monitor marker animation
+    leftMonitor.animateMarker(TIME_FLIGHT_UP, 300, 190);
+
     setTimeout(() => {
         if (flightDiraction.dataset.position == "down") {
             changeHorizontDiraction("straight");
@@ -546,6 +553,8 @@ document.querySelector("#start-button").addEventListener("click", () => {
 
                         let horizontSettingsHeightText = document.querySelector(".horizont-height-settings span");//переназначаем, тк обновляется все внутри, включая span
                         changeHorizontCurrentHeightUp(horizontCurrentHeightText, horizontSettingsHeightText, 2000);
+
+                        leftMonitor.animateMarker(TIME_FLIGHT_UP, 400, 220);
 
                         setTimeout(() => {
                             changeHorizontDiraction("straight");
@@ -843,6 +852,3 @@ function changeHorizontCurrentHeightUp(currentHeight, settingsHeight, time) {
 }
 
 //change tcas horizont message
-function changeHorizontTcas(key) {
-
-}

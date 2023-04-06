@@ -322,15 +322,32 @@ table {
     position: relative;
 }
 
-.marker{
+.monitor-marker{
     position: absolute;
     display: inline-block;
-    width: 10px;
-    height: 10px;
-    background-color: white;
+    /* top: 150px;
+    right: 160px; */
+    width: 15px;
+    height: 30px;
+    background-color: blue;
 }
 
+.marker-text{
+    font-size: 15px;
+    color: white;
+}
 
+#diamond{
+    display: block;
+}
+
+#circle{
+    display: none;
+}
+
+#square{
+    display: none;
+}
 /* Monitor end */
 
 /* 
