@@ -199,6 +199,63 @@ class Horizont {
     }
 }
 
+class Monitor {
+    constructor() {
+        this.marker = document.querySelector(".horizont-height-settings");
+        this.speed = document.querySelector(".horizont-speed-settings");
+        this.markerShape = {
+            diamond: document.querySelector(""),
+            circle: document.querySelector("#line-center"),
+            square: document.querySelector("#line-down")
+        };
+
+        this.tcasMessage = {
+            "alt": document.querySelector("#alt"),
+            "alt-tcas" : document.querySelector("#alt-tcas"),
+            "tcas-start" : document.querySelector("#tcas-start"),
+            "tcas" : document.querySelector("#tcas"),
+            "tcas-speed" : document.querySelector("#tcas-speed"),
+            "tcas-speed-alt" : document.querySelector("#tcas-speed-alt")
+        }
+
+    }
+
+    reloadHeight() {
+        this.heightSettings.innerHTML = `<span>FL${leftHeightSetter.firstDigit.dataset.digit + leftHeightSetter.secondDigit.dataset.digit + leftHeightSetter.thirdDigit.dataset.digit}</span>`
+    }
+
+    reloadSpeed(){
+        this.speedSettings.querySelector("#up-speed").textContent = `\u00A0${leftSpeedSetter.firstDigit.dataset.digit + leftSpeedSetter.secondDigit.dataset.digit}`; 
+        this.speedSettings.querySelector("#down-speed").textContent = `-${leftSpeedSetter.firstDigit.dataset.digit + leftSpeedSetter.secondDigit.dataset.digit}`; 
+    }
+
+    changeSpeedLine(diraction) {
+        for (let key in this.speedLines) {
+            if (key == diraction) {
+                this.speedLines[key].style.display = "block";
+
+                if (key == "center") {
+                    this.speedSettings.style.display= "none";
+                } else {
+                    this.speedSettings.style.display= "block";
+                }
+            } else {
+                this.speedLines[key].style.display = "none";
+            }
+        }
+    }
+
+    changeTcasMessage(message) {
+        for (let key in this.tcasMessage) {
+            if (key == message) {
+                this.tcasMessage[key].style.display = "block";
+            } else {
+                this.tcasMessage[key].style.display = "none";
+            }
+        }
+    }
+}
+
 const leftPlane = new Airbus(".left-plane");
 const rightPlane = new Airbus(".right-plane");
 

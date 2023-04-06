@@ -316,6 +316,22 @@ table {
 /* Height and speed setting end */
 
 
+/* Monitor start */
+
+.monitor{
+    position: relative;
+}
+
+.marker{
+    position: absolute;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: white;
+}
+
+
+/* Monitor end */
 
 /* 
 .circle-height{
