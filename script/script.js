@@ -1,6 +1,6 @@
-const trafficPath = "../assets/sounds/traffic.mp3";
-const claimPath = "../assets/sounds/claim.mp3";
-const clearPath = "../assets/sounds/no-conflict.mp3";
+const trafficPath = "./assets/sounds/traffic.mp3";
+const claimPath = "./assets/sounds/claim.mp3";
+const clearPath = "./assets/sounds/no-conflict.mp3";
 
 // const horizontSpeedLineUp = document.querySelector("#line-up");
 // const horizontSpeedLineCenter = document.querySelector("#line-center");
