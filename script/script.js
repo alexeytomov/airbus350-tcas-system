@@ -610,6 +610,7 @@ document.querySelector("#start-button").addEventListener("click", () => {
                         changeHorizontCurrentHeightUp(horizontCurrentHeightText, horizontSettingsHeightText, 2000);
 
                         leftMonitor.animateMarker(TIME_FLIGHT_UP, 385, 220);
+                        leftMonitor.startSpeedChanging(TIME_FLIGHT_UP + 15000);
 
                         setTimeout(() => {
                             changeHorizontDiraction("straight");
