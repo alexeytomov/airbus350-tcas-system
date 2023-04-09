@@ -238,6 +238,10 @@ table {
 #tcas-speed-alt {
     display: none;
 }
+
+#tcap {
+    display: none;
+}
 /* Height and speed setting start */
 
 .height-controler {
@@ -378,6 +382,25 @@ table {
     display: inline-block;
 }
 
+.outside-tcas{
+    position: relative;
+}
+
+#ta-mode-button{
+    cursor:pointer;
+    position: absolute;
+    display: inline-block;
+    right: 8px;
+    top: 55px
+}
+
+#ta-on-button{
+    display: none;
+}
+
+#ta-off-button{
+    display: block;
+}
 
 .start{
     display: block;
