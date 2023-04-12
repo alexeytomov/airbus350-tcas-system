@@ -5,6 +5,7 @@ const clearPath = "./assets/sounds/no-conflict.mp3";
 const horizontTcasLineRed = document.querySelector("#line-tcas");
 
 const buttonTA = document.querySelector("#ta-mode-button");
+const buttonTCAP = document.querySelector(".tcap-mode-button");
 
 
 //Plane movement start
@@ -148,7 +149,8 @@ class Horizont {
         this.speedLines = {
             up: document.querySelector("#line-up"),
             center: document.querySelector("#line-center"),
-            down: document.querySelector("#line-down")
+            down: document.querySelector("#line-down"),
+            "down-small" : document.querySelector("#line-down-small")
         };
 
         this.tcasMessage = {
@@ -157,7 +159,9 @@ class Horizont {
             "tcas-start" : document.querySelector("#tcas-start"),
             "tcas" : document.querySelector("#tcas"),
             "tcas-speed" : document.querySelector("#tcas-speed"),
-            "tcas-speed-alt" : document.querySelector("#tcas-speed-alt")
+            "tcas-speed-alt" : document.querySelector("#tcas-speed-alt"),
+            "tcap-start" : document.querySelector("#tcap-start"),
+            "tcap" : document.querySelector("#tcap")
         }
 
     }
@@ -175,12 +179,6 @@ class Horizont {
         for (let key in this.speedLines) {
             if (key == diraction) {
                 this.speedLines[key].style.display = "block";
-
-                if (key == "center") {
-                    this.speedSettings.style.display= "none";
-                } else {
-                    this.speedSettings.style.display= "block";
-                }
             } else {
                 this.speedLines[key].style.display = "none";
             }
@@ -478,6 +476,25 @@ buttonTA.addEventListener("click", () => {
     }
 });
 
+//Кнопка TCAP mode
+buttonTCAP.addEventListener("click", () => {
+    if (leftPlane.animation?.playState == "running" || rightPlane.animation?.playState == "running" || 
+        leftPlane.animation?.playState == "paused" || rightPlane.animation?.playState == "paused") { //если анимация запущена - не запускать по новой
+        return;
+    }
+
+
+    if (buttonTCAP.dataset.state == "off") {
+        document.querySelector("#tcap-on").style.display = "block";
+        document.querySelector("#tcap-off").style.display = "none";
+        buttonTCAP.setAttribute("data-state", "on");
+    } else {
+        document.querySelector("#tcap-on").style.display = "none";
+        document.querySelector("#tcap-off").style.display = "block";
+        buttonTCAP.setAttribute("data-state", "off");
+    }
+});
+
 //Кнопка Старт
 document.querySelector("#start-button").addEventListener("mouseover", () => { //наведение мыши на START применяет новые параметры
     rightHeightSetter.save();
@@ -531,9 +548,14 @@ document.querySelector("#start-button").addEventListener("click", () => {
     }, leftPlane.time / 15);
 
     setTimeout(() => {
-        if (flightDiraction.dataset.position == "down") {
+        if ((flightDiraction.dataset.position == "down") && (buttonTCAP.dataset.state == "off")) {
             changeHorizontDiraction("straight");
             leftHorizont.changeSpeedLine("center");
+        } else if ((flightDiraction.dataset.position == "down") && (buttonTCAP.dataset.state == "on")) {
+            setTimeout(() => {
+                changeHorizontDiraction("straight");
+                leftHorizont.changeSpeedLine("center");
+            }, 8000);
         }
     }, TIME_FLIGHT_UP); //выравнивание горизонта
 
@@ -554,7 +576,7 @@ document.querySelector("#start-button").addEventListener("click", () => {
 
             }, leftPlane.time / 5);
             
-        } else if (buttonTA.dataset.state == "on" && ((Math.abs(+leftSpeedSetter.speed) > 15) || (+rightSpeedSetter.speed) > 15)) {
+        } else if (buttonTCAP.dataset.state == "on" && ((Math.abs(+leftSpeedSetter.speed) > 15) || (+rightSpeedSetter.speed) > 15)) {
 
             //Monitor marker animation
             leftMonitor.animateMarker(TIME_FLIGHT_UP + 5000, 400, 220);
@@ -569,21 +591,28 @@ document.querySelector("#start-button").addEventListener("click", () => {
 
                 const trafficPromise = new Promise( (resolve, reject) => {
                     playSound(trafficPath);
+                    //меняется стрелка
+                    leftHorizont.changeSpeedLine("down-small");
+
                     leftHorizont.changeTcasMessage("alt-tcas");
                     leftMonitor.changeMarkerShape("circle");
                     leftMonitor.reloadNumber(-11, "orange", "up");
+
+                    //планирование
+                    leftPlaneTcap();
+                    rightPlaneTcap();
                     setTimeout(() => {
                         resolve();
                     }, 2900);
                 });
 
                 trafficPromise.then(() => {
-                    playSound(claimPath);
-                    leftHorizont.changeTcasMessage("tcas-start");
+                    
+                    leftHorizont.changeTcasMessage("tcap-start");
                     //horizontTcasLineRed.style.display = "block";
 
                     //marker RED
-                    leftMonitor.reloadNumber(-10, "orange", "up");
+                    // leftMonitor.reloadNumber(-10, "orange", "up");
 
                     return new Promise((resolve, reject) => {
                         setTimeout(() => {
@@ -591,7 +620,7 @@ document.querySelector("#start-button").addEventListener("click", () => {
                         }, 1900);
                     });
                 }).then(() => {
-                    leftHorizont.changeTcasMessage("tcas");
+                    leftHorizont.changeTcasMessage("tcap");
 
                     setTimeout(() => {
 
@@ -605,7 +634,7 @@ document.querySelector("#start-button").addEventListener("click", () => {
 
                     fork.then(() => {
                         leftHorizont.changeTcasMessage("tcas-speed");
-                        playSound(clearPath);
+                        // playSound(clearPath);
                         return new Promise( (resolve, reject) => {
                             setTimeout(() => {
                                 resolve();
@@ -625,6 +654,17 @@ document.querySelector("#start-button").addEventListener("click", () => {
 
             }, leftPlane.time / 9);
 
+        } else if (buttonTA.dataset.state == "on" && ((Math.abs(+leftSpeedSetter.speed) > 15) || (+rightSpeedSetter.speed))) {
+            leftMonitor.animateMarker(TIME_FLIGHT_UP + 5000, 400, 220);
+            leftMonitor.startSpeedChanging(25000);
+
+            setTimeout(() => {
+                leftHorizont.changeTcasMessage("alt-tcas");
+                playSound(trafficPath);
+                leftMonitor.changeMarkerShape("circle");
+                leftMonitor.reloadNumber(-11, "orange", "up");
+
+            }, leftPlane.time / 5);
         } else if ((Math.abs(+leftSpeedSetter.speed) > 15) || (+rightSpeedSetter.speed) > 15) {
             let currentLeftHeight = +leftHeightSetter.height * 100;
             let currentRightHeight = +rightHeightSetter.height * 100;
@@ -802,6 +842,69 @@ function rightPlaneUp() {
     }
 }
 
+let leftPlaneTcapCounter = 0;
+let leftPlaneTcapReturn = false;
+function leftPlaneTcap() {
+
+    if (leftPlaneTcapReturn) {
+        let pos = +leftPlane.plane.style.top.slice(0, -2) + 1;
+
+        if ((leftPlaneTcapCounter % 30 == 0)) {
+            leftPlane.plane.style.top = pos + "px";
+        }
+        
+        leftPlaneTcapCounter++;
+        
+    } else {
+        let pos = +leftPlane.plane.style.top.slice(0, -2) - 1;
+
+        if (leftPlaneTcapCounter % 10 == 0) {
+            leftPlane.plane.style.top = pos + "px";
+        }
+    
+        leftPlaneTcapCounter++;
+    }
+
+
+
+    if (leftPlaneTcapCounter < 300) {
+        requestAnimationFrame(leftPlaneTcap);
+    } else if (leftPlaneTcapCounter < 1000){
+        leftPlaneTcapReturn = true;
+        requestAnimationFrame(leftPlaneTcap);
+    }
+}
+
+let rightPlaneTcapCounter = 0;
+let rightPlaneTcapReturn = false;
+function rightPlaneTcap() {
+
+    if (rightPlaneTcapReturn) {
+        let pos = +rightPlane.plane.style.bottom.slice(0, -2) + 1;
+
+        if ((rightPlaneTcapCounter % 30 == 0)){
+            rightPlane.plane.style.bottom = pos + "px";
+        }
+        
+        rightPlaneTcapCounter++;
+        
+    } else if (!rightPlaneTcapReturn) {
+        let pos = +rightPlane.plane.style.bottom.slice(0, -2) - 1;
+
+        if (rightPlaneTcapCounter % 10 == 0) {
+            rightPlane.plane.style.bottom = pos + "px";
+        }
+    
+        rightPlaneTcapCounter++;
+    }
+
+    if (rightPlaneTcapCounter < 200) {
+        requestAnimationFrame(rightPlaneTcap);
+    } else if (rightPlaneTcapCounter < 1000) {
+        rightPlaneTcapReturn = true;
+        requestAnimationFrame(rightPlaneTcap);
+    }
+}
 
 //sounds
 function playSound(source) {
